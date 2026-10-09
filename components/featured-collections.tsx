@@ -1,7 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import { getFeaturedCollections } from "@/lib/queries";
-import { formatPrice, getImageUrl } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
+import CollectionMedia from "@/components/collection-media";
 
 export default async function FeaturedCollections() {
   const items = await getFeaturedCollections(6);
@@ -40,8 +40,6 @@ export default async function FeaturedCollections() {
 
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {items.map((item, index) => {
-              const imageUrl = getImageUrl(item.imageFileId);
-
               return (
                 <article
                   key={item.id}
@@ -50,19 +48,12 @@ export default async function FeaturedCollections() {
                   data-aos-delay={index * 100}
                 >
                   <div className="relative aspect-[4/5] overflow-hidden bg-brand-marble">
-                    {imageUrl ? (
-                      <Image
-                        src={imageUrl}
-                        alt={item.name}
-                        fill
-                        className="object-cover transition duration-500 group-hover:scale-100 scale-95"
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center text-sm text-brand-muted">
-                        No image
-                      </div>
-                    )}
+                    <CollectionMedia
+                      name={item.name}
+                      imageFileId={item.imageFileId}
+                      instagramReelUrl={item.instagramReelUrl}
+                      tiktokReelUrl={item.tiktokReelUrl}
+                    />
                     <span className="absolute left-3 top-3 bg-brand-primary/90 px-2.5 py-1 text-xs uppercase tracking-wider text-white">
                       {item.category.name}
                     </span>

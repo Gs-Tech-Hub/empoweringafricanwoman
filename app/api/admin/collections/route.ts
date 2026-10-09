@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireAdminSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getInstagramReelEmbedUrl, getTikTokEmbedUrl } from "@/lib/utils";
 
 export const runtime = "nodejs";
 
@@ -12,6 +13,18 @@ const createCollectionSchema = z.object({
   categoryId: z.string().min(1, "Category is required"),
   imageFileId: z.string().optional(),
   imageFileName: z.string().optional(),
+  instagramReelUrl: z
+    .string()
+    .trim()
+    .optional()
+    .or(z.literal(""))
+    .refine((value) => !value || getInstagramReelEmbedUrl(value), "Enter a valid Instagram Reel URL"),
+  tiktokReelUrl: z
+    .string()
+    .trim()
+    .optional()
+    .or(z.literal(""))
+    .refine((value) => !value || getTikTokEmbedUrl(value), "Enter a valid TikTok video URL"),
 });
 
 export async function GET() {
@@ -54,6 +67,8 @@ export async function POST(request: Request) {
         categoryId: parsed.categoryId,
         imageFileId: parsed.imageFileId,
         imageFileName: parsed.imageFileName,
+        instagramReelUrl: parsed.instagramReelUrl || null,
+        tiktokReelUrl: parsed.tiktokReelUrl || null,
       },
       include: { category: true },
     });

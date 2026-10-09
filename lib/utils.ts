@@ -52,3 +52,41 @@ export function getImageUrl(fileId?: string | null) {
 
   return `/api/images/${fileId}`;
 }
+
+export function getInstagramReelEmbedUrl(url?: string | null) {
+  if (!url) return null;
+
+  try {
+    const parsed = new URL(url);
+    if (
+      parsed.protocol !== "https:" ||
+      !["instagram.com", "www.instagram.com"].includes(parsed.hostname)
+    ) {
+      return null;
+    }
+
+    const match = parsed.pathname.match(/^\/reels?\/([^/]+)/i);
+    return match ? `https://www.instagram.com/reel/${match[1]}/embed` : null;
+  } catch {
+    return null;
+  }
+}
+
+export function getTikTokEmbedUrl(url?: string | null) {
+  if (!url) return null;
+
+  try {
+    const parsed = new URL(url);
+    if (
+      parsed.protocol !== "https:" ||
+      !["tiktok.com", "www.tiktok.com"].includes(parsed.hostname)
+    ) {
+      return null;
+    }
+
+    const match = parsed.pathname.match(/\/video\/(\d+)/i);
+    return match ? `https://www.tiktok.com/player/v1/${match[1]}` : null;
+  } catch {
+    return null;
+  }
+}

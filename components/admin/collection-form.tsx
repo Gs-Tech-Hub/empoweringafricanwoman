@@ -14,6 +14,8 @@ export default function CollectionForm({ categories }: { categories: Category[] 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [instagramReelUrl, setInstagramReelUrl] = useState("");
+  const [tiktokReelUrl, setTiktokReelUrl] = useState("");
   const [categoryId, setCategoryId] = useState(categories[0]?.id ?? "");
   const [image, setImage] = useState<File | null>(null);
   const [error, setError] = useState("");
@@ -82,6 +84,8 @@ export default function CollectionForm({ categories }: { categories: Category[] 
         categoryId,
         imageFileId,
         imageFileName,
+        instagramReelUrl: instagramReelUrl || undefined,
+        tiktokReelUrl: tiktokReelUrl || undefined,
       }),
     });
 
@@ -95,6 +99,8 @@ export default function CollectionForm({ categories }: { categories: Category[] 
     setName("");
     setDescription("");
     setPrice("");
+    setInstagramReelUrl("");
+    setTiktokReelUrl("");
     setImage(null);
     setLoading(false);
     router.refresh();
@@ -174,6 +180,32 @@ export default function CollectionForm({ categories }: { categories: Category[] 
             accept="image/*"
             onChange={(event) => setImage(event.target.files?.[0] ?? null)}
             className="form-input w-full"
+          />
+        </div>
+        <div>
+          <label htmlFor="item-instagram" className="mb-1 block text-sm text-brand-muted">
+            Instagram Reel URL (optional)
+          </label>
+          <input
+            id="item-instagram"
+            type="url"
+            value={instagramReelUrl}
+            onChange={(event) => setInstagramReelUrl(event.target.value)}
+            className="form-input w-full"
+            placeholder="https://www.instagram.com/reel/..."
+          />
+        </div>
+        <div>
+          <label htmlFor="item-tiktok" className="mb-1 block text-sm text-brand-muted">
+            TikTok Reel URL (optional)
+          </label>
+          <input
+            id="item-tiktok"
+            type="url"
+            value={tiktokReelUrl}
+            onChange={(event) => setTiktokReelUrl(event.target.value)}
+            className="form-input w-full"
+            placeholder="https://www.tiktok.com/@.../video/..."
           />
         </div>
         <div className="md:col-span-2">

@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image from "next/image";
-import { formatPrice, getImageUrl } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
+import CollectionMedia from "@/components/collection-media";
 
 type Category = {
   id: string;
@@ -16,6 +16,8 @@ type CollectionItem = {
   description: string | null;
   price: string | null;
   imageFileId: string | null;
+  instagramReelUrl: string | null;
+  tiktokReelUrl: string | null;
   categoryId: string;
   category: Category;
 };
@@ -71,8 +73,6 @@ export default function CollectionsGrid({
       ) : (
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {filteredItems.map((item, index) => {
-            const imageUrl = getImageUrl(item.imageFileId);
-
             return (
               <article
                 key={item.id}
@@ -81,19 +81,12 @@ export default function CollectionsGrid({
                 data-aos-delay={index * 50}
               >
                 <div className="relative aspect-[4/5] overflow-hidden bg-brand-marble">
-                  {imageUrl ? (
-                    <Image
-                      src={imageUrl}
-                      alt={item.name}
-                      fill
-                      className="object-cover transition duration-500 group-hover:scale-100 scale-95"
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center text-sm text-brand-muted">
-                      No image
-                    </div>
-                  )}
+                  <CollectionMedia
+                    name={item.name}
+                    imageFileId={item.imageFileId}
+                    instagramReelUrl={item.instagramReelUrl}
+                    tiktokReelUrl={item.tiktokReelUrl}
+                  />
                   <span className="absolute left-3 top-3 bg-brand-secondary/90 px-2.5 py-1 text-xs uppercase tracking-wider text-white">
                     {item.category.name}
                   </span>
