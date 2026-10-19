@@ -69,7 +69,7 @@ export async function uploadFileToSupabase(
   });
 
   if (error || !data?.path) {
-    const message = error?.message ?? "Failed to upload image to Supabase storage";
+    const message = error?.message ?? "Failed to upload media to Supabase storage";
     const detailedMessage = message.includes("row-level security policy")
       ? getRlsErrorMessage()
       : message;
@@ -99,7 +99,7 @@ export async function getFileStreamFromSupabase(fileId: string) {
   const { data, error } = await supabase.storage.from(bucket).download(fileId);
 
   if (error || !data) {
-    throw new Error(error?.message ?? "Failed to read image from storage");
+    throw new Error(error?.message ?? "Failed to read media from storage");
   }
 
   const arrayBuffer = await data.arrayBuffer();
@@ -112,7 +112,7 @@ export async function getFileMetadataFromSupabase(fileId: string) {
   const { data, error } = await supabase.storage.from(bucket).download(fileId);
 
   if (error || !data) {
-    throw new Error(error?.message ?? "Failed to read image metadata from storage");
+    throw new Error(error?.message ?? "Failed to read media metadata from storage");
   }
 
   return {

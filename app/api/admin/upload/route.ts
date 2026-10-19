@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/auth";
 import { isDriveConfigured, uploadFileToDrive } from "@/lib/google-drive";
 import { isSupabaseConfigured, uploadFileToSupabase } from "@/lib/supabase-storage";
+import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
@@ -22,7 +23,7 @@ export async function POST(request: Request) {
   if (!isDriveConfigured() && !isSupabaseConfigured()) {
     console.error("[upload] no storage backend configured");
     return NextResponse.json(
-      { error: "No image storage backend is configured. Set either Google Drive or Supabase env vars." },
+      { error: "No media storage backend is configured. Set either Google Drive or Supabase env vars." },
       { status: 503 },
     );
   }
@@ -38,18 +39,86 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    if (!file.type.startsWith("image/")) {
-      console.error("[upload] unsupported file type", { fileType: file.type });
-      return NextResponse.json({ error: "Only image files are allowed" }, { status: 400 });
+    const isSupportedImage = [
+      "image/avif",
+      "image/gif",
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+    ].includes(file.type);
+    const isSupportedVideo = ["video/mp4", "video/quicktime", "video/webm"].includes(
+      file.type,
+    );
+    const isSupportedAudio = [
+      "audio/mpeg",
+      "audio/mp4",
+      "audio/ogg",
+      "audio/wav",
+      "audio/webm",
+    ].includes(file.type);
+    const mediaType = isSupportedImage
+      ? "IMAGE"
+      : isSupportedVideo
+        ? "VIDEO"
+        : isSupportedAudio
+          ? "AUDIO"
+          : file.type === "application/pdf"
+            ? "DOCUMENT"
+            : null;
+
+    if (!mediaType) {
+      return NextResponse.json(
+        { error: "Upload a supported image, video, audio file, or PDF" },
+        { status: 400 },
+      );
+    }
+
+    const altText = formData.get("altText");
+    const caption = formData.get("caption");
+    if (
+      (typeof altText === "string" && altText.length > 500) ||
+      (typeof caption === "string" && caption.length > 1000)
+    ) {
+      return NextResponse.json({ error: "Media description is too long" }, { status: 400 });
+    }
+
+    const maxFileSize = mediaType === "VIDEO" ? 100 * 1024 * 1024 : 25 * 1024 * 1024;
+    if (file.size === 0 || file.size > maxFileSize) {
+      return NextResponse.json(
+        {
+          error:
+            mediaType === "VIDEO"
+              ? "Video files must be smaller than 100 MB"
+              : "Files must be smaller than 25 MB",
+        },
+        { status: 400 },
+      );
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    const result = isSupabaseConfigured()
+    const storageProvider = isSupabaseConfigured() ? "SUPABASE" : "GOOGLE_DRIVE";
+    const result = storageProvider === "SUPABASE"
       ? await uploadFileToSupabase(buffer, file.name, file.type)
       : await uploadFileToDrive(buffer, file.name, file.type);
 
-    console.log("[upload] upload success", { result });
-    return NextResponse.json(result);
+    const asset = await prisma.mediaAsset.create({
+      data: {
+        fileId: result.fileId,
+        fileName: result.fileName,
+        mimeType: file.type,
+        mediaType,
+        storageProvider,
+        altText: typeof altText === "string" ? altText.trim() || null : null,
+        caption: typeof caption === "string" ? caption.trim() || null : null,
+      },
+    });
+
+    console.log("[upload] upload success", { mediaAssetId: asset.id });
+    return NextResponse.json({
+      fileId: result.fileId,
+      fileName: result.fileName,
+      asset,
+    });
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Failed to upload file";

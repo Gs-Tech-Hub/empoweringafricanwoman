@@ -1,7 +1,10 @@
 ---
 name: Charity site conversion
-overview: "Transform the existing Viv La Viv Next.js + Prisma + NextAuth admin app into “Empowering the African Woman” per [empowerAfricaWomen-Blueprint.md](empowerAfricaWomen-Blueprint.md): new design system and section-based public site, regional routes with Netlify edge routing, and Flutterwave hosted checkout with verified webhooks—while keeping the current auth models, admin login flow, and core content tables (repurposed for programmes, stories, and locations)."
+overview: "Transform the existing Viv La Viv Next.js + Prisma + NextAuth admin app into “Empowering the African Woman” per [empowerAfricaWomen-Blueprint.md](empowerAfricaWomen-Blueprint.md): database-managed regional website content and media, new design system and section-based public site, regional routes with Netlify edge routing, and Flutterwave hosted checkout with verified webhooks—while preserving authentication and existing content during migration."
 todos:
+  - id: database-cms
+    content: Add regional page content and media asset schema; render homepage overrides from DB and provide authenticated admin editing/upload
+    status: done
   - id: design-system
     content: Replace boutique tokens/fonts with blueprint palette (Playfair + Inter), add config/brand.ts, navigation.ts, AGENTS.md, lucide-react
     status: in_progress
@@ -32,8 +35,9 @@ isProject: false
 | Framework | Next.js 15 App Router, Tailwind v4, TypeScript | Keep; align with blueprint folder additions |
 | Auth | [lib/auth.ts](lib/auth.ts), NextAuth (Google + credentials), [middleware.ts](middleware.ts) guarding `/admin` | Keep behavior; update default admin email branding in env/docs only |
 | Prisma auth | `User`, `Account`, `Session`, `VerificationToken` in [prisma/schema.prisma](prisma/schema.prisma) | Unchanged |
-| Content DB | `Category`, `CollectionItem`, `Branch`, `Review` | **No table renames**; repurpose in UI and admin copy |
-| Media | Google Drive / Supabase via [lib/google-drive.ts](lib/google-drive.ts), [app/api/images/[fileId]/route.ts](app/api/images/[fileId]/route.ts) | Keep for admin-uploaded programme and story images |
+| Content DB | `Category`, `CollectionItem`, `Branch`, `Review` | Preserve existing records; use for programmes, locations, and consented stories while adding first-class page content |
+| Page content | Static regional files plus hard-coded sections | Add region-aware `SiteContent` entries, with database region overrides and shared/global fallback |
+| Media | Google Drive / Supabase via [lib/google-drive.ts](lib/google-drive.ts), [app/api/images/[fileId]/route.ts](app/api/images/[fileId]/route.ts) | Add a `MediaAsset` library for image, video, audio, and document uploads; associate assets with page content and edit metadata in admin |
 | Admin CRUD | [app/admin/categories](app/admin/categories), [app/admin/collections](app/admin/collections), API routes under `app/api/admin/` | Keep routes; relabel UI (“Programme categories”, “Programmes”) and hide `price` on public programme cards (field can remain optional in DB) |
 
 ## Semantic mapping (boutique → charity)
@@ -47,7 +51,7 @@ flowchart LR
   UserAuth --> AdminCMS
 ```
 
-- **Homepage** composes blueprint sections from DB + static config (mission copy, impact *targets* clearly labeled until verified).
+- **Homepage** composes blueprint sections from DB + static config (mission copy, impact *targets* clearly labeled until verified). Admin-managed content takes precedence; config remains a safe fallback for unconfigured entries.
 - **Reviews** page becomes **Stories** (`/stories`, redirect from `/reviews`).
 - **Collections** becomes **Programmes** (`/programmes`, redirect from `/collections`).
 - **Locations** stays for offices / programme hubs (`Branch`).
@@ -78,6 +82,13 @@ netlify.toml
 AGENTS.md
 ```
 
+### Content and media management (added requirement)
+
+- Store editable page copy in `SiteContent` keyed by page, section, field, and region (`global`, `africa`, `canada`, or `us`). Resolve shared `global` values first, then apply the selected region's overrides; retain the existing regional config as a fallback while content is migrated.
+- Store uploaded files in `MediaAsset` with their media type, MIME type, storage provider/key, accessible alt text, and caption. Keep the actual binary in the existing configured Supabase or Google Drive storage backend; the database stores references and metadata, not file contents.
+- Admin users need a content editor for regional homepage copy, and a media library that supports upload/selection/editable metadata for images, videos, audio, and documents. Public content should refer to media assets by database relation, not hard-coded provider URLs.
+- Extend the same editor pattern to programme, story, impact, about, and location content as those public surfaces are built. Do not delete/reseed live content as part of schema rollout.
+
 Public shell: replace root [components/ui/header.tsx](components/ui/header.tsx) / [components/ui/footer.tsx](components/ui/footer.tsx) with blueprint layout components (or refactor existing files in place to avoid duplicate headers). [app/layout.tsx](app/layout.tsx) switches fonts from Cormorant/Montserrat/Great Vibes to **Playfair Display + Inter** and updates site metadata.
 
 ## Phase A — Design system and engineering rules
@@ -89,16 +100,21 @@ Public shell: replace root [components/ui/header.tsx](components/ui/header.tsx) 
 3. **AGENTS.md** at repo root (content from blueprint §6) for consistent agent/human rules
 4. **Rename project metadata**: `package.json` name, README, `.env.example` placeholders (charity admin email, Flutterwave keys)—no secrets committed
 
-## Phase B — Public site (visual + engaging UX)
+## Phase B — Database-managed content and public site (visual + engaging UX)
+
+1. Add `SiteContent` and `MediaAsset` models using an additive Prisma migration. Region-specific content overrides shared `global` content; existing regional config remains a fallback during rollout.
+2. Add authenticated admin editing for homepage hero/about copy and hero media, plus a media library for uploading and editing image/video/audio/document metadata.
+3. Store the media provider and file key in the database so assets remain resolvable through the site media route independent of provider-specific public URLs.
+4. Use database content first across public pages; progressively move impact targets, programme pillars, and remaining page copy into the editor while retaining only verified/static defaults as appropriate.
 
 Build the homepage as **composable server components** (blueprint §5), wired to real data where possible:
 
 | Section | Data source |
 | --- | --- |
-| Hero | Regional `content/*.ts` + static hero image in `public/images/` |
-| About / mission | [lib/content/about.ts](lib/content/about.ts) rewritten for charity |
-| Programme pillars | Four items from config **or** top four `Category` rows |
-| Impact | Static config only; every figure labeled **target** until org verifies |
+| Hero | Regional `SiteContent` + related `MediaAsset`; regional config and static image are fallback |
+| About / mission | Regional `SiteContent` lead with approved-copy fallback; values from [lib/content/about.ts](lib/content/about.ts) |
+| Programme pillars | Four items from config **or** top four `Category` rows; migrate editable copy into the CMS |
+| Impact | Static config until verified; every figure labeled **target**; migrate approved targets into the CMS |
 | Programmes + cards | `getFeaturedCollections()` / categories from [lib/queries.ts](lib/queries.ts) |
 | Stories | `getPublishedReviews()` (consent note in admin copy) |
 | Donation panel | Client form → API (Phase C); currency from region config |
@@ -201,8 +217,9 @@ Align with blueprint §10:
 
 ## Suggested implementation order
 
-1. Design tokens, fonts, AGENTS.md, config/content skeleton  
-2. Layout components + homepage sections + page remaps/redirects  
-3. Regional routes + cookie + Netlify edge  
-4. Prisma `Donation` + Flutterwave API + webhook + donate pages  
-5. Seed/admin relabel + tests + Netlify deploy validation  
+1. Design tokens, fonts, AGENTS.md, config/content skeleton
+2. Additive content/media schema, admin editing and media library
+3. Layout components + homepage sections + page remaps/redirects
+4. Regional routes + cookie + Netlify edge
+5. Prisma `Donation` + Flutterwave API + webhook + donate pages
+6. Seed/admin relabel + tests + Netlify deploy validation

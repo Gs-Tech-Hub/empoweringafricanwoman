@@ -38,7 +38,7 @@ export function ProgrammesSection({ programmes }: ProgrammesSectionProps) {
         <div className="grid gap-8 md:grid-cols-3">
           {featured.map((programme, index) => {
             const imageSrc = programme.imageFileId
-              ? getImageUrl(programme.imageFileId)
+              ? getImageUrl(programme.imageFileId) ?? "/images/fashion-collection-3.jpg"
               : "/images/fashion-collection-3.jpg";
             return (
               <article

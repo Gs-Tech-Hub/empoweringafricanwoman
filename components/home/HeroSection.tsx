@@ -7,6 +7,11 @@ type HeroSectionProps = {
   description: string;
   image: string;
   imageAlt: string;
+  media?: {
+    url: string;
+    mediaType: "IMAGE" | "VIDEO";
+    altText: string | null;
+  };
   donateHref?: string;
   missionHref?: string;
 };
@@ -17,6 +22,7 @@ export function HeroSection({
   description,
   image,
   imageAlt,
+  media,
   donateHref = "/donate",
   missionHref = "/about",
 }: HeroSectionProps) {
@@ -38,14 +44,25 @@ export function HeroSection({
         </div>
 
         <div className="image-rounded relative aspect-[4/5] w-full shadow-luxury" data-aos="fade-left">
-          <Image
-            src={image}
-            alt={imageAlt}
-            fill
-            priority
-            className="object-cover"
-            sizes="(max-width: 1024px) 100vw, 50vw"
-          />
+          {media?.mediaType === "VIDEO" ? (
+            <video
+              src={media.url}
+              poster={image}
+              controls
+              preload="metadata"
+              aria-label={media.altText || "Featured video"}
+              className="h-full w-full rounded-[inherit] object-cover"
+            />
+          ) : (
+            <Image
+              src={media?.url ?? image}
+              alt={media?.altText || imageAlt}
+              fill
+              priority
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
+          )}
         </div>
       </div>
     </section>

@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -59,19 +59,19 @@ model Category {
 }
 
 model CollectionItem {
-  id            String   @id @default(cuid())
-  name          String
-  description   String?
-  price         Decimal? @db.Decimal(10, 2)
-  imageFileId   String?
-  imageFileName String?
+  id               String   @id @default(cuid())
+  name             String
+  description      String?
+  price            Decimal? @db.Decimal(10, 2)
+  imageFileId      String?
+  imageFileName    String?
   instagramReelUrl String?
-  tiktokReelUrl   String?
-  published     Boolean  @default(true)
-  categoryId    String
-  category      Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  tiktokReelUrl    String?
+  published        Boolean  @default(true)
+  categoryId       String
+  category         Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
 model Branch {
@@ -96,4 +96,49 @@ model Review {
   content    String
   published  Boolean @default(true)
   sortOrder  Int     @default(0)
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+  DOCUMENT
+}
+
+enum MediaStorageProvider {
+  SUPABASE
+  GOOGLE_DRIVE
+}
+
+model MediaAsset {
+  id              String               @id @default(cuid())
+  fileId          String
+  fileName        String
+  mimeType        String
+  mediaType       MediaType
+  storageProvider MediaStorageProvider
+  altText         String?
+  caption         String?
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  contentEntries  SiteContent[]
+
+  @@unique([storageProvider, fileId])
+  @@index([mediaType, createdAt])
+}
+
+model SiteContent {
+  id           String      @id @default(cuid())
+  page         String
+  region       String      @default("global")
+  section      String
+  field        String
+  value        String?     @db.Text
+  mediaAssetId String?
+  mediaAsset   MediaAsset? @relation(fields: [mediaAssetId], references: [id], onDelete: SetNull)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@unique([page, region, section, field])
+  @@index([page, region])
 }

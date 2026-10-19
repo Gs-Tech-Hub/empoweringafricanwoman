@@ -9,14 +9,24 @@ export const metadata = {
 
 const adminLinks = [
   {
+    href: "/admin/content",
+    label: "Website Content",
+    description: "Edit regional homepage copy and hero media",
+  },
+  {
+    href: "/admin/media",
+    label: "Media Library",
+    description: "Upload and manage images, video, audio, and documents",
+  },
+  {
     href: "/admin/categories",
-    label: "Categories",
-    description: "Manage product categories",
+    label: "Programme Categories",
+    description: "Manage categories for programme content",
   },
   {
     href: "/admin/collections",
-    label: "Collections",
-    description: "Add and remove collection items",
+    label: "Programmes",
+    description: "Add and remove programme content",
   },
 ];
 

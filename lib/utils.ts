@@ -53,6 +53,10 @@ export function getImageUrl(fileId?: string | null) {
   return `/api/images/${fileId}`;
 }
 
+export function getMediaUrl(mediaId?: string | null) {
+  return mediaId ? `/api/media/${encodeURIComponent(mediaId)}` : null;
+}
+
 export function getInstagramReelEmbedUrl(url?: string | null) {
   if (!url) return null;
 

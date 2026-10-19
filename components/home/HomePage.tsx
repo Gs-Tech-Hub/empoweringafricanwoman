@@ -4,6 +4,8 @@ import {
   getFeaturedCollections,
   getPublishedReviews,
 } from "@/lib/queries";
+import { getPageContent } from "@/lib/content/site-content";
+import { getMediaUrl } from "@/lib/utils";
 import { AboutSection } from "./AboutSection";
 import { DonationSection } from "./DonationSection";
 import { HeroSection } from "./HeroSection";
@@ -18,22 +20,33 @@ type HomePageProps = {
 
 export default async function HomePage({ regionId = "global" }: HomePageProps) {
   const content = getRegionalContent(regionId);
-  const [programmes, stories] = await Promise.all([
+  const [programmes, stories, pageContent] = await Promise.all([
     getFeaturedCollections(6),
     getPublishedReviews(),
+    getPageContent("home", regionId),
   ]);
+  const heroAsset = pageContent.hero?.media?.mediaAsset;
+  const heroMedia =
+    heroAsset && (heroAsset.mediaType === "IMAGE" || heroAsset.mediaType === "VIDEO")
+      ? {
+          url: getMediaUrl(heroAsset.id)!,
+          mediaType: heroAsset.mediaType,
+          altText: heroAsset.altText,
+        }
+      : undefined;
 
   return (
     <>
       <HeroSection
-        eyebrow={content.hero.eyebrow}
-        title={content.hero.title}
-        description={content.hero.description}
+        eyebrow={pageContent.hero?.eyebrow?.value ?? content.hero.eyebrow}
+        title={pageContent.hero?.title?.value ?? content.hero.title}
+        description={pageContent.hero?.description?.value ?? content.hero.description}
         image={content.hero.image}
-        imageAlt={content.hero.imageAlt}
+        imageAlt={heroMedia?.altText || content.hero.imageAlt}
+        media={heroMedia}
         donateHref={`/donate?region=${regionId}`}
       />
-      <AboutSection lead={content.aboutLead} />
+      <AboutSection lead={pageContent.about?.lead?.value ?? content.aboutLead} />
       <ProgrammePillars />
       <ImpactSection />
       <ProgrammesSection programmes={programmes} />
