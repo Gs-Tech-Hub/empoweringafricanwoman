@@ -12,12 +12,34 @@
   @apply px-4 py-2.5;
 }
 
-.btn-primary {
-  @apply bg-brand-primary text-white uppercase tracking-[0.3em] rounded-none hover:bg-red-800 transition duration-500 ease-out;
+.btn-primary,
+.button-primary {
+  @apply rounded-full bg-brand-secondary px-8 py-3.5 text-sm font-semibold tracking-wide text-brand-primary shadow-soft transition duration-300 hover:bg-[#e8b84a];
 }
 
-.btn-secondary {
-  @apply border border-brand-border bg-white text-brand-charcoal uppercase tracking-[0.25em] rounded-none hover:bg-brand-cream transition duration-500 ease-out;
+.btn-secondary,
+.button-secondary {
+  @apply rounded-full border-2 border-brand-primary bg-transparent px-8 py-3.5 text-sm font-semibold tracking-wide text-brand-primary transition duration-300 hover:bg-brand-ivory;
+}
+
+.content-container {
+  @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+}
+
+.eyebrow {
+  @apply text-xs font-semibold uppercase tracking-[0.35em] text-brand-accent;
+}
+
+.section-heading {
+  @apply font-heading text-3xl font-semibold leading-tight text-brand-charcoal md:text-4xl lg:text-5xl;
+}
+
+.card-programme {
+  @apply overflow-hidden rounded-[var(--radius-luxury)] border border-brand-border/80 bg-white shadow-soft transition duration-300 hover:shadow-luxury;
+}
+
+.image-rounded {
+  @apply overflow-hidden rounded-[var(--radius-image)];
 }
 
 .card-luxury {

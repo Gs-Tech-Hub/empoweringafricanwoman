@@ -9,9 +9,8 @@
 }
 
 @theme {
-  --font-heading: var(--font-cormorant), "Playfair Display", serif;
-  --font-body: var(--font-montserrat), "Inter", sans-serif;
-  --font-script: var(--font-great-vibes), cursive;
+  --font-heading: var(--font-playfair), "Playfair Display", serif;
+  --font-body: var(--font-inter), "Inter", sans-serif;
 
   --text-xs: 0.8125rem;
   --text-xs--line-height: 1.5384;
@@ -36,27 +35,30 @@
   --text-7xl: 4.5rem;
   --text-7xl--line-height: 1;
 
-  --color-brand-primary: #B61E24;
-  --color-brand-secondary: #CDA349;
-  --color-brand-accent: #E8A4B8;
-  --color-brand-cream: #FFF8F2;
-  --color-brand-ivory: #FAF6F0;
-  --color-brand-marble: #F5EFE8;
-  --color-brand-charcoal: #2C2C2C;
-  --color-brand-text: #474747;
-  --color-brand-muted: #666666;
-  --color-brand-light: #FDFCFB;
-  --color-brand-border: #E9DDD2;
+  --color-brand-primary: #542719;
+  --color-brand-secondary: #DCA126;
+  --color-brand-accent: #B94E25;
+  --color-brand-cream: #FBF9F5;
+  --color-brand-ivory: #F5E8D5;
+  --color-brand-marble: #F5E8D5;
+  --color-brand-charcoal: #542719;
+  --color-brand-text: #3d2a22;
+  --color-brand-muted: #6b5348;
+  --color-brand-light: #FBF9F5;
+  --color-brand-border: #e8d5bc;
 
-  --shadow-luxury: 0 12px 40px rgba(181, 30, 36, 0.12);
-  --shadow-soft: 0 8px 20px rgba(0, 0, 0, 0.06);
+  --color-gold: #DCA126;
+  --color-cocoa: #542719;
+  --color-orange: #B94E25;
 
-  --radius-luxury: 18px;
+  --shadow-luxury: 0 12px 40px rgba(84, 39, 25, 0.1);
+  --shadow-soft: 0 8px 24px rgba(84, 39, 25, 0.06);
 
-  --background-image-marble: radial-gradient(ellipse at 20% 30%, rgba(232, 164, 184, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 70%, rgba(205, 163, 73, 0.06) 0%, transparent 45%),
-    linear-gradient(180deg, #FAF6F0 0%, #FFF8F2 50%, #F5EFE8 100%);
-  --background-image-gold: linear-gradient(135deg, #F7E7A1, #CDA349, #F7E7A1);
+  --radius-luxury: 16px;
+  --radius-image: 20px;
+
+  --background-image-marble: linear-gradient(180deg, #FBF9F5 0%, #F5E8D5 100%);
+  --background-image-gold: linear-gradient(135deg, #f0d48a, #DCA126, #f0d48a);
 
   --animate-fade-up: fade-up 0.5s ease-out forwards;
   --animate-fade-in: fade-in 0.5s ease-out forwards;
