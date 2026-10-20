@@ -53,8 +53,44 @@ export function getImageUrl(fileId?: string | null) {
   return `/api/images/${fileId}`;
 }
 
-export function getMediaUrl(mediaId?: string | null) {
-  return mediaId ? `/api/media/${encodeURIComponent(mediaId)}` : null;
+type MediaUrlInput =
+  | string
+  | null
+  | undefined
+  | {
+      id: string;
+      fileId?: string | null;
+    };
+
+function isDirectMediaSource(fileId: string) {
+  return (
+    fileId.startsWith("/") ||
+    fileId.startsWith("http://") ||
+    fileId.startsWith("https://") ||
+    fileId.startsWith("data:") ||
+    fileId.startsWith("images/") ||
+    fileId.startsWith("public/")
+  );
+}
+
+export function getMediaUrl(media?: MediaUrlInput) {
+  if (!media) {
+    return null;
+  }
+
+  if (typeof media === "string") {
+    if (isDirectMediaSource(media)) {
+      return getImageUrl(media);
+    }
+    return `/api/media/${encodeURIComponent(media)}`;
+  }
+
+  const directSource = media.fileId ? getImageUrl(media.fileId) : null;
+  if (media.fileId && isDirectMediaSource(media.fileId)) {
+    return directSource;
+  }
+
+  return `/api/media/${encodeURIComponent(media.id)}`;
 }
 
 export function getInstagramReelEmbedUrl(url?: string | null) {

@@ -1,9 +1,21 @@
 import { redirect } from "next/navigation";
-import ContentEditor, { contentPages } from "@/components/admin/content-editor";
+import ContentEditor from "@/components/admin/content-editor";
+import ContentFilters from "@/components/admin/content-filters";
 import { regionList, isRegionId } from "@/config/regions";
 import { auth } from "@/lib/auth";
 import { getRegionalContentEntries } from "@/lib/content/site-content";
 import { prisma } from "@/lib/prisma";
+
+const contentPages = [
+  "home",
+  "about",
+  "programmes",
+  "impact",
+  "stories",
+  "locations",
+  "donate",
+  "site",
+] as const;
 
 export const metadata = {
   title: "Manage Website Content",
@@ -45,44 +57,12 @@ export default async function AdminContentPage({
         </p>
       </div>
 
-      <form action="/admin/content" method="get" className="grid max-w-2xl gap-4 sm:grid-cols-2">
-        <div>
-          <label htmlFor="content-page" className="mb-1 block text-sm text-brand-muted">
-            Page
-          </label>
-          <select
-            id="content-page"
-            name="page"
-            defaultValue={page}
-            onChange={(event) => event.currentTarget.form?.requestSubmit()}
-            className="form-select w-full"
-          >
-            {contentPages.map((item) => (
-              <option key={item} value={item}>
-                {item === "site" ? "Site-wide content" : item}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="content-region" className="mb-1 block text-sm text-brand-muted">
-            Region
-          </label>
-          <select
-            id="content-region"
-            name="region"
-            defaultValue={region}
-            onChange={(event) => event.currentTarget.form?.requestSubmit()}
-            className="form-select w-full"
-          >
-            {regionList.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      </form>
+      <ContentFilters
+        page={page}
+        region={region}
+        pages={contentPages}
+        regions={regionList}
+      />
 
       <ContentEditor
         key={`${page}-${region}`}

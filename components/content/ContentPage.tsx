@@ -33,7 +33,7 @@ export default function ContentPage({ content, title }: ContentPageProps) {
             const body =
               fields.body?.value ?? fields.content?.value ?? fields.description?.value ?? "";
             const mediaAsset = fields.media?.mediaAsset;
-            const mediaUrl = mediaAsset ? getMediaUrl(mediaAsset.id) : null;
+            const mediaUrl = mediaAsset ? getMediaUrl(mediaAsset) : null;
 
             return (
               <section key={id} className="mx-auto max-w-4xl space-y-5">

@@ -166,7 +166,7 @@ export default function MediaLibrary({ initialAssets }: { initialAssets: MediaAs
                 <div className="flex min-h-36 items-center justify-center overflow-hidden rounded-lg bg-brand-ivory">
                   {asset.mediaType === "IMAGE" ? (
                     <Image
-                      src={getMediaUrl(asset.id)!}
+                      src={getMediaUrl(asset)!}
                       alt={asset.altText ?? ""}
                       width={240}
                       height={180}
@@ -175,17 +175,17 @@ export default function MediaLibrary({ initialAssets }: { initialAssets: MediaAs
                     />
                   ) : asset.mediaType === "VIDEO" ? (
                     <video
-                      src={getMediaUrl(asset.id)!}
+                      src={getMediaUrl(asset)!}
                       controls
                       preload="metadata"
                       className="max-h-48 w-full"
                     >
                     </video>
                   ) : asset.mediaType === "AUDIO" ? (
-                    <audio src={getMediaUrl(asset.id)!} controls className="w-full px-3" />
+                    <audio src={getMediaUrl(asset)!} controls className="w-full px-3" />
                   ) : (
                     <a
-                      href={getMediaUrl(asset.id)!}
+                      href={getMediaUrl(asset)!}
                       className="text-sm font-medium text-brand-primary underline"
                     >
                       Open PDF

@@ -54,7 +54,7 @@ export function StoriesSection({ stories, content }: StoriesSectionProps) {
             >
               {story.mediaAsset ? (
                 <Image
-                  src={getMediaUrl(story.mediaAsset.id)!}
+                  src={getMediaUrl(story.mediaAsset)!}
                   alt={story.mediaAsset.altText ?? ""}
                   width={600}
                   height={400}

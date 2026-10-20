@@ -77,7 +77,7 @@ export default function CollectionList({ items }: { items: CollectionItem[] }) {
     <div className="space-y-3">
       {error && <p className="text-sm text-brand-primary">{error}</p>}
       {items.map((item) => {
-        const imageUrl = item.mediaAsset ? getMediaUrl(item.mediaAsset.id) : null;
+        const imageUrl = item.mediaAsset ? getMediaUrl(item.mediaAsset) : null;
 
         return (
           <div

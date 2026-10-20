@@ -33,7 +33,7 @@ export default async function LocationsPage() {
             {branches.map((branch) => {
               const imageUrl =
                 branch.mediaAsset?.mediaType === "IMAGE"
-                  ? getMediaUrl(branch.mediaAsset.id)
+                  ? getMediaUrl(branch.mediaAsset)
                   : null;
 
               return (

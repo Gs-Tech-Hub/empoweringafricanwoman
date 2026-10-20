@@ -23,17 +23,6 @@ type ContentEditorProps = {
   media: MediaOption[];
 };
 
-const contentPages = [
-  "home",
-  "about",
-  "programmes",
-  "impact",
-  "stories",
-  "locations",
-  "donate",
-  "site",
-] as const;
-
 export default function ContentEditor({
   page,
   region,
@@ -215,5 +204,3 @@ export default function ContentEditor({
     </form>
   );
 }
-
-export { contentPages };

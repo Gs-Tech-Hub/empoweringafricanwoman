@@ -48,7 +48,7 @@ export function ProgrammesSection({ programmes, content }: ProgrammesSectionProp
           {featured.map((programme, index) => {
             const imageSrc =
               programme.mediaAsset?.mediaType === "IMAGE"
-                ? getMediaUrl(programme.mediaAsset.id)
+                ? getMediaUrl(programme.mediaAsset)
                 : null;
             return (
               <article

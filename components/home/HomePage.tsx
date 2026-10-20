@@ -31,7 +31,7 @@ export default async function HomePage({ regionId = "global" }: HomePageProps) {
   const heroMedia =
     heroAsset && (heroAsset.mediaType === "IMAGE" || heroAsset.mediaType === "VIDEO")
       ? {
-          url: getMediaUrl(heroAsset.id)!,
+          url: getMediaUrl(heroAsset)!,
           mediaType: heroAsset.mediaType,
           altText: heroAsset.altText,
         }

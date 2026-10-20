@@ -34,7 +34,7 @@ export default async function StoriesPage() {
               <blockquote key={story.id} className="card-programme flex flex-col p-6">
                 {story.mediaAsset ? (
                   <Image
-                    src={getMediaUrl(story.mediaAsset.id)!}
+                    src={getMediaUrl(story.mediaAsset)!}
                     alt={story.mediaAsset.altText ?? ""}
                     width={600}
                     height={400}

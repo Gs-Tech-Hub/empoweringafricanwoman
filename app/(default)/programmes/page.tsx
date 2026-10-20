@@ -33,7 +33,7 @@ export default async function ProgrammesPage() {
             {programmes.map((programme) => {
               const imageUrl =
                 programme.mediaAsset?.mediaType === "IMAGE"
-                  ? getMediaUrl(programme.mediaAsset.id)
+                  ? getMediaUrl(programme.mediaAsset)
                   : null;
 
               return (

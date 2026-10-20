@@ -1,5 +1,5 @@
 export const brand = {
-  name: "Empowering the African Woman",
+  name: "Empower African Women",
   shortName: "EAW",
   colors: {
     cocoa: "#542719",
