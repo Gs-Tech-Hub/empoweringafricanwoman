@@ -1,34 +1,43 @@
 import Link from "next/link";
-import Image from "next/image";
 import { brand } from "@/config/brand";
 import { footerNavLinks, governanceLinks } from "@/config/navigation";
 
-export default function SiteFooter() {
+type SiteFooterProps = {
+  description?: string;
+  email?: string;
+  instagram?: string;
+  linkedin?: string;
+};
+
+export default function SiteFooter({
+  description,
+  email,
+  instagram,
+  linkedin,
+}: SiteFooterProps) {
   return (
     <footer className="border-t border-brand-border bg-brand-ivory">
       <div className="content-container py-14 md:py-16">
         <div className="grid gap-10 md:grid-cols-3">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <Image
-                src="/images/logo.jpeg"
-                alt=""
-                width={40}
-                height={40}
-                className="h-10 w-10 rounded-full object-cover"
-              />
+              <span aria-hidden="true" className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-brand-primary font-heading text-xs font-semibold text-brand-ivory">
+                EAW
+              </span>
               <p className="font-heading text-lg font-semibold text-brand-charcoal">
                 {brand.name}
               </p>
             </div>
-            <p className="max-w-sm text-sm leading-relaxed text-brand-muted">
-              {brand.description}
-            </p>
-            <p className="text-sm text-brand-muted">
-              <a className="hover:text-brand-accent" href={`mailto:${brand.contact.email}`}>
-                {brand.contact.email}
-              </a>
-            </p>
+            {description ? (
+              <p className="max-w-sm text-sm leading-relaxed text-brand-muted">{description}</p>
+            ) : null}
+            {email ? (
+              <p className="text-sm text-brand-muted">
+                <a className="hover:text-brand-accent" href={`mailto:${email}`}>
+                  {email}
+                </a>
+              </p>
+            ) : null}
           </div>
 
           <div>
@@ -61,14 +70,20 @@ export default function SiteFooter() {
                 </li>
               ))}
             </ul>
-            <div className="mt-6 flex gap-4 text-sm">
-              <a href={brand.social.instagram} className="text-brand-muted hover:text-brand-accent">
-                Instagram
-              </a>
-              <a href={brand.social.linkedin} className="text-brand-muted hover:text-brand-accent">
-                LinkedIn
-              </a>
-            </div>
+            {instagram || linkedin ? (
+              <div className="mt-6 flex gap-4 text-sm">
+                {instagram ? (
+                  <a href={instagram} target="_blank" rel="noreferrer" className="text-brand-muted hover:text-brand-accent">
+                    Instagram
+                  </a>
+                ) : null}
+                {linkedin ? (
+                  <a href={linkedin} target="_blank" rel="noreferrer" className="text-brand-muted hover:text-brand-accent">
+                    LinkedIn
+                  </a>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         </div>
 

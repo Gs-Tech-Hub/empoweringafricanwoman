@@ -1,18 +1,22 @@
+import Image from "next/image";
 import Link from "next/link";
-import { Star } from "lucide-react";
+import type { PageContent } from "@/lib/content/site-content";
+import { getMediaUrl } from "@/lib/utils";
 
 type Story = {
   id: string;
   authorName: string;
   content: string;
-  rating: number;
+  title: string | null;
+  mediaAsset: { id: string; altText: string | null } | null;
 };
 
 type StoriesSectionProps = {
   stories: Story[];
+  content: PageContent;
 };
 
-export function StoriesSection({ stories }: StoriesSectionProps) {
+export function StoriesSection({ stories, content }: StoriesSectionProps) {
   const featured = stories.slice(0, 3);
 
   if (featured.length === 0) {
@@ -24,13 +28,16 @@ export function StoriesSection({ stories }: StoriesSectionProps) {
       <div className="content-container">
         <div className="mb-12 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
           <div data-aos="fade-up">
-            <p className="eyebrow mb-4">Stories</p>
+            {content.stories?.eyebrow?.value ? (
+              <p className="eyebrow mb-4">{content.stories.eyebrow.value}</p>
+            ) : null}
             <div className="gold-divider mb-6 !mx-0" />
-            <h2 className="section-heading">Voices From Our Community</h2>
-            <p className="mt-4 max-w-xl text-sm text-brand-muted">
-              Shared with participant consent. These stories reflect personal experiences, not
-              verified impact statistics.
-            </p>
+            <h2 className="section-heading">{content.stories?.title?.value || "Stories"}</h2>
+            {content.stories?.description?.value ? (
+              <p className="mt-4 max-w-xl text-sm text-brand-muted">
+                {content.stories.description.value}
+              </p>
+            ) : null}
           </div>
           <Link href="/stories" className="button-secondary" data-aos="fade-up">
             View all stories
@@ -45,11 +52,21 @@ export function StoriesSection({ stories }: StoriesSectionProps) {
               data-aos="fade-up"
               data-aos-delay={index * 80}
             >
-              <div className="mb-3 flex gap-0.5 text-brand-secondary" aria-hidden>
-                {Array.from({ length: story.rating }).map((_, i) => (
-                  <Star key={i} className="h-4 w-4 fill-current" />
-                ))}
-              </div>
+              {story.mediaAsset ? (
+                <Image
+                  src={getMediaUrl(story.mediaAsset.id)!}
+                  alt={story.mediaAsset.altText ?? ""}
+                  width={600}
+                  height={400}
+                  unoptimized
+                  className="mb-5 aspect-[4/3] w-full rounded-lg object-cover"
+                />
+              ) : null}
+              {story.title ? (
+                <h3 className="mb-3 font-heading text-lg font-semibold text-brand-primary">
+                  {story.title}
+                </h3>
+              ) : null}
               <p className="flex-1 text-sm leading-relaxed text-brand-muted">&ldquo;{story.content}&rdquo;</p>
               <footer className="mt-4 text-sm font-semibold text-brand-charcoal">
                 — {story.authorName}

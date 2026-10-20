@@ -5,7 +5,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { compare } from "bcryptjs";
 
-const DEFAULT_ADMIN_EMAIL = (process.env.ADMIN_EMAIL ?? "admin@vivalaviv.com").toLowerCase();
+const DEFAULT_ADMIN_EMAIL = process.env.ADMIN_EMAIL?.trim().toLowerCase();
 
 function getAllowedAdminEmails(): string[] {
   const envEmails = (process.env.ALLOWED_ADMIN_EMAILS ?? "")
@@ -13,7 +13,12 @@ function getAllowedAdminEmails(): string[] {
     .map((email) => email.trim().toLowerCase())
     .filter(Boolean);
 
-  return Array.from(new Set([...envEmails, DEFAULT_ADMIN_EMAIL]));
+  return Array.from(
+    new Set([
+      ...envEmails,
+      ...(DEFAULT_ADMIN_EMAIL ? [DEFAULT_ADMIN_EMAIL] : []),
+    ]),
+  );
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({

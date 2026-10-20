@@ -59,23 +59,29 @@ model Category {
 }
 
 model CollectionItem {
-  id               String   @id @default(cuid())
+  id               String      @id @default(cuid())
   name             String
   description      String?
-  price            Decimal? @db.Decimal(10, 2)
+  price            Decimal?    @db.Decimal(10, 2)
   imageFileId      String?
   imageFileName    String?
+  mediaAssetId     String?
+  mediaAsset       MediaAsset? @relation("CollectionMedia", fields: [mediaAssetId], references: [id], onDelete: SetNull)
   instagramReelUrl String?
   tiktokReelUrl    String?
-  published        Boolean  @default(true)
+  published        Boolean     @default(true)
+  region           String      @default("global")
   categoryId       String
-  category         Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  category         Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  sortOrder        Int         @default(0)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  @@index([region, published, sortOrder])
 }
 
 model Branch {
-  id            String  @id @default(cuid())
+  id            String      @id @default(cuid())
   name          String
   address       String
   phone         String?
@@ -83,19 +89,31 @@ model Branch {
   latitude      Float?
   longitude     Float?
   mapEmbedUrl   String?
+  region        String      @default("global")
   imageFileId   String?
   imageFileName String?
-  sortOrder     Int     @default(0)
-  published     Boolean @default(true)
+  mediaAssetId  String?
+  mediaAsset    MediaAsset? @relation("BranchMedia", fields: [mediaAssetId], references: [id], onDelete: SetNull)
+  sortOrder     Int         @default(0)
+  published     Boolean     @default(true)
+
+  @@index([region, published, sortOrder])
 }
 
 model Review {
-  id         String  @id @default(cuid())
-  authorName String
-  rating     Int
-  content    String
-  published  Boolean @default(true)
-  sortOrder  Int     @default(0)
+  id               String      @id @default(cuid())
+  title            String?
+  authorName       String
+  rating           Int?
+  content          String
+  published        Boolean     @default(true)
+  consentConfirmed Boolean     @default(false)
+  region           String      @default("global")
+  sortOrder        Int         @default(0)
+  mediaAssetId     String?
+  mediaAsset       MediaAsset? @relation("StoryMedia", fields: [mediaAssetId], references: [id], onDelete: SetNull)
+
+  @@index([region, published, consentConfirmed, sortOrder])
 }
 
 enum MediaType {
@@ -122,6 +140,9 @@ model MediaAsset {
   createdAt       DateTime             @default(now())
   updatedAt       DateTime             @updatedAt
   contentEntries  SiteContent[]
+  collectionItems CollectionItem[]     @relation("CollectionMedia")
+  branches        Branch[]             @relation("BranchMedia")
+  stories         Review[]             @relation("StoryMedia")
 
   @@unique([storageProvider, fileId])
   @@index([mediaType, createdAt])

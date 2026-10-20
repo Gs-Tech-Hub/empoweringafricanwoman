@@ -16,7 +16,7 @@ export default function CategoryList({ categories }: { categories: Category[] })
   const [error, setError] = useState("");
 
   async function handleDelete(id: string) {
-    if (!confirm("Delete this category? Items in this category will also be removed.")) {
+    if (!confirm("Delete this programme category? It must not contain any programmes.")) {
       return;
     }
 
@@ -41,7 +41,7 @@ export default function CategoryList({ categories }: { categories: Category[] })
   if (categories.length === 0) {
     return (
       <p className="card-luxury p-6 text-brand-muted">
-        No categories yet. Add your first category above.
+        No programme categories yet. Add one above.
       </p>
     );
   }

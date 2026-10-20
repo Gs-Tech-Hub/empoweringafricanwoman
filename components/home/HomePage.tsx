@@ -1,10 +1,13 @@
 import type { RegionId } from "@/config/regions";
-import { getRegionalContent } from "@/content";
 import {
   getFeaturedCollections,
   getPublishedReviews,
 } from "@/lib/queries";
-import { getPageContent } from "@/lib/content/site-content";
+import {
+  getContentSections,
+  getContentValue,
+  getPageContent,
+} from "@/lib/content/site-content";
 import { getMediaUrl } from "@/lib/utils";
 import { AboutSection } from "./AboutSection";
 import { DonationSection } from "./DonationSection";
@@ -19,10 +22,9 @@ type HomePageProps = {
 };
 
 export default async function HomePage({ regionId = "global" }: HomePageProps) {
-  const content = getRegionalContent(regionId);
   const [programmes, stories, pageContent] = await Promise.all([
-    getFeaturedCollections(6),
-    getPublishedReviews(),
+    getFeaturedCollections(6, regionId),
+    getPublishedReviews(regionId),
     getPageContent("home", regionId),
   ]);
   const heroAsset = pageContent.hero?.media?.mediaAsset;
@@ -38,23 +40,30 @@ export default async function HomePage({ regionId = "global" }: HomePageProps) {
   return (
     <>
       <HeroSection
-        eyebrow={pageContent.hero?.eyebrow?.value ?? content.hero.eyebrow}
-        title={pageContent.hero?.title?.value ?? content.hero.title}
-        description={pageContent.hero?.description?.value ?? content.hero.description}
-        image={content.hero.image}
-        imageAlt={heroMedia?.altText || content.hero.imageAlt}
+        eyebrow={getContentValue(pageContent, "hero", "eyebrow")}
+        title={getContentValue(pageContent, "hero", "title")}
+        description={getContentValue(pageContent, "hero", "description")}
         media={heroMedia}
         donateHref={`/donate?region=${regionId}`}
       />
-      <AboutSection lead={pageContent.about?.lead?.value ?? content.aboutLead} />
-      <ProgrammePillars />
-      <ImpactSection />
-      <ProgrammesSection programmes={programmes} />
-      <StoriesSection stories={stories} />
+      <AboutSection
+        eyebrow={getContentValue(pageContent, "about", "eyebrow")}
+        title={getContentValue(pageContent, "about", "title")}
+        lead={getContentValue(pageContent, "about", "lead")}
+        values={getContentSections(pageContent, "value").map(({ id, fields }) => ({
+          id,
+          title: fields.title?.value ?? "",
+          description: fields.description?.value ?? "",
+        }))}
+      />
+      <ProgrammePillars content={pageContent} />
+      <ImpactSection content={pageContent} />
+      <ProgrammesSection programmes={programmes} content={pageContent} />
+      <StoriesSection stories={stories} content={pageContent} />
       <DonationSection
-        regionId={regionId}
-        currency={content.currency}
-        presets={content.donationPresets}
+        eyebrow={getContentValue(pageContent, "donation", "eyebrow")}
+        title={getContentValue(pageContent, "donation", "title")}
+        description={getContentValue(pageContent, "donation", "description")}
       />
     </>
   );

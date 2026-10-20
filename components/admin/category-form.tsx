@@ -35,11 +35,11 @@ export default function CategoryForm() {
   return (
     <form onSubmit={handleSubmit} className="card-luxury p-6">
       <h2 className="font-heading text-lg font-light uppercase tracking-wider text-brand-charcoal">
-        Add Category
+        Add programme category
       </h2>
       <div className="mt-4">
         <label htmlFor="category-name" className="mb-1 block text-sm text-brand-muted">
-          Category name
+          Programme category name
         </label>
         <input
           id="category-name"
@@ -47,7 +47,7 @@ export default function CategoryForm() {
           value={name}
           onChange={(event) => setName(event.target.value)}
           className="form-input w-full"
-          placeholder="e.g. Dresses"
+          placeholder="e.g. Education"
           required
         />
       </div>
@@ -57,7 +57,7 @@ export default function CategoryForm() {
         disabled={loading}
         className="btn btn-primary mt-4 disabled:opacity-50"
       >
-        {loading ? "Adding..." : "Add Category"}
+        {loading ? "Adding..." : "Add category"}
       </button>
     </form>
   );

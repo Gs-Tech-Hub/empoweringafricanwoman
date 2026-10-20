@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Manage Collections",
+  title: "Manage Programmes",
 };
 
 import { auth } from "@/lib/auth";
@@ -29,10 +29,10 @@ export default async function AdminCollectionsPage() {
       <div>
         <p className="section-subtitle">Manage</p>
         <h1 className="mt-2 font-heading text-3xl font-light uppercase tracking-widest text-brand-charcoal">
-          Collections
+          Programmes
         </h1>
         <p className="mt-2 text-brand-muted">
-          Add and manage items displayed on the collections page.
+          Add programme records and approve drafts before publishing them to the site.
         </p>
       </div>
 

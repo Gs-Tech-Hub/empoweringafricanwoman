@@ -14,14 +14,28 @@ export async function GET(
   const { id } = await params;
   const asset = await prisma.mediaAsset.findUnique({
     where: { id },
-    include: { _count: { select: { contentEntries: true } } },
+    include: {
+      _count: {
+        select: {
+          contentEntries: true,
+          collectionItems: { where: { published: true } },
+          branches: { where: { published: true } },
+          stories: { where: { published: true, consentConfirmed: true } },
+        },
+      },
+    },
   });
 
   if (!asset) {
     return NextResponse.json({ error: "Media not found" }, { status: 404 });
   }
 
-  if (asset._count.contentEntries === 0 && !(await requireAdminSession())) {
+  const isPublished =
+    asset._count.contentEntries > 0 ||
+    asset._count.collectionItems > 0 ||
+    asset._count.branches > 0 ||
+    asset._count.stories > 0;
+  if (!isPublished && !(await requireAdminSession())) {
     return NextResponse.json({ error: "Media not found" }, { status: 404 });
   }
 
@@ -39,7 +53,7 @@ export async function GET(
             ? `attachment; filename*=UTF-8''${encodeURIComponent(asset.fileName)}`
             : `inline; filename*=UTF-8''${encodeURIComponent(asset.fileName)}`,
         "Cache-Control":
-          asset._count.contentEntries > 0
+          isPublished
             ? "public, max-age=86400, stale-while-revalidate=604800"
             : "private, no-store",
         "X-Content-Type-Options": "nosniff",

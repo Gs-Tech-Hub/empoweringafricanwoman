@@ -1,29 +1,38 @@
-import type { CurrencyCode, RegionId } from "@/config/regions";
-import DonationForm from "@/components/donation/DonationForm";
-
 type DonationSectionProps = {
-  regionId: RegionId;
-  currency: CurrencyCode;
-  presets: number[];
+  eyebrow: string;
+  title: string;
+  description: string;
 };
 
-export function DonationSection({ regionId, currency, presets }: DonationSectionProps) {
+export function DonationSection({
+  eyebrow,
+  title,
+  description,
+}: DonationSectionProps) {
+  if (!eyebrow && !title && !description) {
+    return null;
+  }
+
   return (
     <section className="bg-brand-ivory py-16 md:py-24" id="donate">
       <div className="content-container">
         <div className="grid items-start gap-12 lg:grid-cols-2">
           <div data-aos="fade-up">
-            <p className="eyebrow mb-4">Give today</p>
+            {eyebrow ? <p className="eyebrow mb-4">{eyebrow}</p> : null}
             <div className="gold-divider mb-6 !mx-0" />
-            <h2 className="section-heading mb-4">Fuel Lasting Change</h2>
-            <p className="text-brand-muted leading-relaxed">
-              Your gift supports education, skills training, and mentorship for African women. All
-              donations are processed through a secure hosted checkout.
-            </p>
+            {title ? <h2 className="section-heading mb-4">{title}</h2> : null}
+            {description ? (
+              <p className="leading-relaxed text-brand-muted">{description}</p>
+            ) : null}
           </div>
-          <div data-aos="fade-up" data-aos-delay="100">
-            <DonationForm regionId={regionId} currency={currency} presets={presets} />
-          </div>
+          <p
+            data-aos="fade-up"
+            data-aos-delay="100"
+            className="rounded-xl border border-brand-border bg-white p-6 text-sm leading-relaxed text-brand-muted"
+          >
+            Online donations are not available yet. Please check back after secure payment
+            processing is set up.
+          </p>
         </div>
       </div>
     </section>

@@ -13,9 +13,6 @@ export default function CollectionForm({ categories }: { categories: Category[] 
   const router = useRouter();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [instagramReelUrl, setInstagramReelUrl] = useState("");
-  const [tiktokReelUrl, setTiktokReelUrl] = useState("");
   const [categoryId, setCategoryId] = useState(categories[0]?.id ?? "");
   const [image, setImage] = useState<File | null>(null);
   const [error, setError] = useState("");
@@ -26,8 +23,7 @@ export default function CollectionForm({ categories }: { categories: Category[] 
     setLoading(true);
     setError("");
 
-    let imageFileId: string | undefined;
-    let imageFileName: string | undefined;
+    let mediaAssetId: string | undefined;
 
     if (image) {
       const formData = new FormData();
@@ -70,8 +66,7 @@ export default function CollectionForm({ categories }: { categories: Category[] 
       }
 
       const uploadData = await uploadResponse.json();
-      imageFileId = uploadData.fileId;
-      imageFileName = uploadData.fileName;
+      mediaAssetId = uploadData.asset?.id;
     }
 
     const response = await fetch("/api/admin/collections", {
@@ -80,12 +75,8 @@ export default function CollectionForm({ categories }: { categories: Category[] 
       body: JSON.stringify({
         name,
         description: description || undefined,
-        price: price || undefined,
         categoryId,
-        imageFileId,
-        imageFileName,
-        instagramReelUrl: instagramReelUrl || undefined,
-        tiktokReelUrl: tiktokReelUrl || undefined,
+        mediaAssetId,
       }),
     });
 
@@ -98,9 +89,6 @@ export default function CollectionForm({ categories }: { categories: Category[] 
 
     setName("");
     setDescription("");
-    setPrice("");
-    setInstagramReelUrl("");
-    setTiktokReelUrl("");
     setImage(null);
     setLoading(false);
     router.refresh();
@@ -109,9 +97,9 @@ export default function CollectionForm({ categories }: { categories: Category[] 
   if (categories.length === 0) {
     return (
       <p className="card-luxury border-brand-secondary/30 bg-brand-secondary/5 p-6 text-brand-charcoal">
-        Create at least one category before adding collection items.{" "}
+        Create at least one programme category before adding programme content.{" "}
         <Link href="/admin/categories" className="text-brand-primary underline">
-          Go to Categories
+          Go to programme categories
         </Link>
       </p>
     );
@@ -120,13 +108,13 @@ export default function CollectionForm({ categories }: { categories: Category[] 
   return (
     <form onSubmit={handleSubmit} className="card-luxury p-6">
       <h2 className="font-heading text-lg font-light uppercase tracking-wider text-brand-charcoal">
-        Add Collection Item
+        Add programme
       </h2>
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <div>
           <label htmlFor="item-name" className="mb-1 block text-sm text-brand-muted">
-            Name
+            Programme title
           </label>
           <input
             id="item-name"
@@ -156,56 +144,15 @@ export default function CollectionForm({ categories }: { categories: Category[] 
           </select>
         </div>
         <div>
-          <label htmlFor="item-price" className="mb-1 block text-sm text-brand-muted">
-            Price (optional)
-          </label>
-          <input
-            id="item-price"
-            type="number"
-            step="0.01"
-            min="0"
-            value={price}
-            onChange={(event) => setPrice(event.target.value)}
-            className="form-input w-full"
-            placeholder="99.00"
-          />
-        </div>
-        <div>
           <label htmlFor="item-image" className="mb-1 block text-sm text-brand-muted">
-            Image
+            Programme image (optional)
           </label>
           <input
             id="item-image"
             type="file"
-            accept="image/*"
+            accept="image/avif,image/gif,image/jpeg,image/png,image/webp"
             onChange={(event) => setImage(event.target.files?.[0] ?? null)}
             className="form-input w-full"
-          />
-        </div>
-        <div>
-          <label htmlFor="item-instagram" className="mb-1 block text-sm text-brand-muted">
-            Instagram Reel URL (optional)
-          </label>
-          <input
-            id="item-instagram"
-            type="url"
-            value={instagramReelUrl}
-            onChange={(event) => setInstagramReelUrl(event.target.value)}
-            className="form-input w-full"
-            placeholder="https://www.instagram.com/reel/..."
-          />
-        </div>
-        <div>
-          <label htmlFor="item-tiktok" className="mb-1 block text-sm text-brand-muted">
-            TikTok Reel URL (optional)
-          </label>
-          <input
-            id="item-tiktok"
-            type="url"
-            value={tiktokReelUrl}
-            onChange={(event) => setTiktokReelUrl(event.target.value)}
-            className="form-input w-full"
-            placeholder="https://www.tiktok.com/@.../video/..."
           />
         </div>
         <div className="md:col-span-2">
@@ -229,7 +176,7 @@ export default function CollectionForm({ categories }: { categories: Category[] 
         disabled={loading}
         className="btn btn-primary mt-4 disabled:opacity-50"
       >
-        {loading ? "Adding..." : "Add Item"}
+        {loading ? "Adding..." : "Add programme"}
       </button>
     </form>
   );

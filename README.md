@@ -1,93 +1,64 @@
-# Free React / Next.js landing page template
+# Empowering the African Woman
 
-![Open React / Next.js template preview](https://github.com/user-attachments/assets/522a5e46-2a0e-48ca-80eb-87c7fa58f3ea)
+A regional, database-managed charity website built with Next.js App Router, TypeScript,
+Tailwind CSS, Prisma, PostgreSQL, and NextAuth.
 
-**Open** is a **free React / Next.js landing page template built with Tailwind CSS** for developers/makers who want to create a quick and professional landing page for their open source projects, SaaS products, online services, and more.
+## Requirements
 
-**UPDATE 2025-02-04** Added Tailwind v4 support!
+- Node.js supported by the installed Next.js version
+- pnpm 10
+- PostgreSQL
+- A configured Supabase or Google Drive media provider for uploads
 
-Use it for whatever you want, and be sure to reach us out on [Twitter](https://twitter.com/Cruip_com) if you build anything cool/useful with it.
+## Local setup
 
-Created and maintained with ❤️ by [Cruip.com](https://cruip.com).
+1. Install dependencies with `pnpm install`.
+2. Configure the environment variables listed below.
+3. Apply the Prisma migrations with `pnpm exec prisma migrate deploy`.
+4. Generate the Prisma client with `pnpm db:generate`.
+5. Start the development server with `pnpm dev`.
 
-_Version 1.0.0 built with the Cruip CSS is available [here](https://github.com/cruip/open-react-template/releases/tag/1.0.0)._
-_Version 2.0.3 built with Tailwind CSS and React + Vite is available [here](https://github.com/cruip/open-react-template/releases/tag/2.0.3)._
-_Version 3.3.0 (before redesign) built with Tailwind CSS and Next.js is available [here](https://github.com/cruip/open-react-template/releases/tag/3.3.0)._
+The public site reads its editable copy, media references, programmes, locations, and
+consented stories from the database. Use the authenticated `/admin` area to manage
+website content and media. Global content is the fallback; a region-specific value
+overrides it.
 
-## Live demo
+## Environment
 
-Check the live demo here 👉️ [https://open.cruip.com/](https://open.cruip.com/)
+Required for database-backed pages:
 
-## Open PRO
+- `DATABASE_URL` — PostgreSQL connection string
+- `AUTH_SECRET` — NextAuth secret
+- `ADMIN_EMAIL` and `ADMIN_PASSWORD` — seed administrator credentials
 
-[![Open Pro](https://github.com/user-attachments/assets/2062c728-95f1-4d59-aa2d-d63556f625d5)](https://cruip.com/)
+Configure `ALLOWED_ADMIN_EMAILS` for any additional administrators. Google sign-in
+requires `AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET`.
 
-## Design files
+For Supabase media storage, configure `NEXT_PUBLIC_SUPABASE_URL`,
+`NEXT_PUBLIC_SUPABASE_BUCKET`, and a server-side `SUPABASE_SERVICE_ROLE_KEY`.
+Alternatively, configure `GOOGLE_SERVICE_ACCOUNT_EMAIL`,
+`GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`, and `GOOGLE_DRIVE_FOLDER_ID`.
 
-If you need the design files, you can download them from Figma's Community 👉 https://bit.ly/401KSUS
+Do not commit credentials, private donor data, or service-role keys.
 
-## Usage
+## Content and publishing
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+- Create and publish website content, programmes, locations, and stories through admin.
+- Publish participant stories only after confirming consent for both the copy and selected
+  media.
+- Use only approved, licensed imagery and verified impact information. Unverified metrics
+  should be omitted or clearly identified as targets.
+- The database migration preserves existing records but unpublishes legacy boutique-era
+  programme, location, and review rows. Review and approve records before republishing.
+- Online donations remain unavailable until the server-side checkout, provider
+  verification, and webhook flow are implemented and tested.
 
-### Getting Started
+## Quality checks
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-pnpm dev (recommended)
-# or
-yarn dev
+```text
+pnpm exec prisma validate
+pnpm exec tsc --noEmit
+pnpm build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-### Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-### Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-### Support notes
-
-This template has been developed with the App Router (`app`) and React Server Components. If you’re unfamiliar with these beta features, you can find more information about them on the Next.js beta documentation page. So, please note that any request dealing with React (e.g. extra features, customisations, et cetera) is to be considered out of the support scope.
-
-For more information about what support covers, please see our (FAQs)[https://cruip.com/faq/].
-
-## Credits
-
-- [Nucleo](https://nucleoapp.com/)
-
-## Terms and License
-
-- Released under the [GPL](https://www.gnu.org/licenses/gpl-3.0.html).
-- Copyright 2024 [Cruip](https://cruip.com/).
-- Use it for personal and commercial projects, but please don’t republish, redistribute, or resell the template.
-- Attribution is not required, although it is really appreciated.
-
-## About Us
-
-We're an Italian developer/designer duo creating high-quality design/code resources for developers, makers, and startups.
-
-## Stay in the loop
-
-If you would like to know when we release new resources, you can follow [@pacovitiello](https://x.com/pacovitiello) and [@DavidePacilio](https://x.com/DavidePacilio) on X, or you can subscribe to our [newsletter](https://cruip.com/newsletter/).
+The application requires a reachable database for admin and dynamic content at runtime.

@@ -1,35 +1,61 @@
 import {
   Briefcase,
+  Heart,
   GraduationCap,
-  HeartPulse,
+  Stethoscope,
   Users,
+  BookOpen,
   type LucideIcon,
 } from "lucide-react";
-import { programmePillars } from "@/config/impact";
+import { getContentSections, type PageContent } from "@/lib/content/site-content";
 
-const iconMap: Record<(typeof programmePillars)[number]["icon"], LucideIcon> = {
-  "graduation-cap": GraduationCap,
+const iconMap: Record<string, LucideIcon> = {
+  "book-open": BookOpen,
   briefcase: Briefcase,
-  "heart-pulse": HeartPulse,
+  graduation: GraduationCap,
+  heart: Heart,
+  health: Stethoscope,
   users: Users,
 };
 
-export function ProgrammePillars() {
+export function ProgrammePillars({
+  content,
+}: {
+  content: PageContent;
+}) {
+  const pillars = getContentSections(content, "pillar").map(({ id, fields }) => ({
+    id,
+    title: fields.title?.value ?? "",
+    description: fields.description?.value ?? "",
+    icon: fields.icon?.value ?? "book-open",
+  })).filter((pillar) => pillar.title || pillar.description);
+
+  if (!pillars.length) {
+    return null;
+  }
+
   return (
     <section className="bg-brand-cream py-16 md:py-24">
       <div className="content-container">
         <div className="mb-12 text-center" data-aos="fade-up">
-          <p className="eyebrow mb-4">Programme pillars</p>
+          <p className="eyebrow mb-4">{content.pillars?.eyebrow?.value || "Programme pillars"}</p>
           <div className="gold-divider mb-6" />
-          <h2 className="section-heading">How We Create Change</h2>
+          <h2 className="section-heading">
+            {content.pillars?.title?.value || "Our focus"}
+          </h2>
+          {content.pillars?.description?.value ? (
+            <p className="mx-auto mt-4 max-w-2xl text-brand-muted">
+              {content.pillars.description.value}
+            </p>
+          ) : null}
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {programmePillars.map((pillar, index) => {
-            const Icon = iconMap[pillar.icon];
+          {pillars.map((pillar, index) => {
+            const Icon = iconMap[pillar.icon] ?? BookOpen;
             return (
               <article
-                key={pillar.title}
+                key={pillar.id}
                 className="card-programme p-6"
                 data-aos="fade-up"
                 data-aos-delay={index * 80}

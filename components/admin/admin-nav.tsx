@@ -7,8 +7,10 @@ const navLinks = [
   { href: "/admin", label: "Dashboard", exact: true },
   { href: "/admin/content", label: "Website Content", exact: false },
   { href: "/admin/media", label: "Media Library", exact: false },
-  { href: "/admin/categories", label: "Categories", exact: false },
-  { href: "/admin/collections", label: "Collections", exact: false },
+  { href: "/admin/stories", label: "Stories", exact: false },
+  { href: "/admin/locations", label: "Locations", exact: false },
+  { href: "/admin/categories", label: "Programme categories", exact: false },
+  { href: "/admin/collections", label: "Programmes", exact: false },
 ];
 
 export default function AdminNav() {

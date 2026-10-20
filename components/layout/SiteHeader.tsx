@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { mainNavLinks } from "@/config/navigation";
 import { brand } from "@/config/brand";
@@ -32,15 +31,11 @@ export default function SiteHeader() {
     <header className="relative z-40 w-full border-b border-brand-border/70 bg-brand-light/90 backdrop-blur-md">
       <div className="content-container flex h-16 items-center justify-between gap-4 md:h-20">
         <Link href="/" className="flex shrink-0 items-center gap-3">
-          <Image
-            src="/images/logo.jpeg"
-            alt={`${brand.name} logo`}
-            width={44}
-            height={44}
-            className="h-10 w-10 rounded-full object-cover md:h-11 md:w-11"
-          />
-          <span className="hidden font-heading text-lg font-semibold leading-tight text-brand-charcoal sm:block">
-            {brand.shortName}
+          <span aria-hidden="true" className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-brand-primary font-heading text-xs font-semibold tracking-wide text-brand-ivory md:h-11 md:w-11">
+            EAW
+          </span>
+          <span className="hidden max-w-40 font-heading text-sm font-semibold leading-tight text-brand-charcoal lg:block">
+            {brand.name}
           </span>
         </Link>
 

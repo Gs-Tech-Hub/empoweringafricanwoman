@@ -3,7 +3,6 @@ import "./css/style.css";
 import { Inter, Playfair_Display } from "next/font/google";
 
 import SiteHeader from "@/components/layout/SiteHeader";
-import WhatsAppButton from "@/components/ui/whatsapp-button";
 import { brand } from "@/config/brand";
 
 const playfair = Playfair_Display({
@@ -25,7 +24,6 @@ export const metadata = {
     default: brand.name,
     template: `%s | ${brand.name}`,
   },
-  description: brand.description,
 };
 
 export default function RootLayout({
@@ -42,7 +40,6 @@ export default function RootLayout({
           <SiteHeader />
           {children}
         </div>
-        <WhatsAppButton />
       </body>
     </html>
   );

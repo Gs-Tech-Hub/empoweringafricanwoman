@@ -1,31 +1,26 @@
-"use client";
+import SiteFooter from "@/components/layout/SiteFooter";
+import { getPageContent, getContentValue } from "@/lib/content/site-content";
+import { getCurrentRegion } from "@/lib/region/get-current-region";
 
-import { useEffect } from "react";
+export const dynamic = "force-dynamic";
 
-import AOS from "aos";
-import "aos/dist/aos.css";
-
-import Footer from "@/components/ui/footer";
-
-export default function DefaultLayout({
+export default async function DefaultLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  useEffect(() => {
-    AOS.init({
-      once: true,
-      disable: "phone",
-      duration: 600,
-      easing: "ease-out-sine",
-    });
-  });
+  const region = await getCurrentRegion();
+  const content = await getPageContent("site", region);
 
   return (
     <>
       <main className="relative flex grow flex-col">{children}</main>
-
-      <Footer />
+      <SiteFooter
+        description={getContentValue(content, "footer", "description")}
+        email={getContentValue(content, "footer", "email")}
+        instagram={getContentValue(content, "social", "instagram")}
+        linkedin={getContentValue(content, "social", "linkedin")}
+      />
     </>
   );
 }

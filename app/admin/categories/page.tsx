@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Manage Categories",
+  title: "Manage Programme Categories",
 };
 
 import { auth } from "@/lib/auth";
@@ -21,10 +21,10 @@ export default async function AdminCategoriesPage() {
       <div>
         <p className="section-subtitle">Manage</p>
         <h1 className="mt-2 font-heading text-3xl font-light uppercase tracking-widest text-brand-charcoal">
-          Categories
+          Programme categories
         </h1>
         <p className="mt-2 text-brand-muted">
-          Organize your collection items into categories.
+          Organize published programmes into categories.
         </p>
       </div>
 

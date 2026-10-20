@@ -2,29 +2,14 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireAdminSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getInstagramReelEmbedUrl, getTikTokEmbedUrl } from "@/lib/utils";
 
 export const runtime = "nodejs";
 
 const createCollectionSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),
   description: z.string().trim().optional(),
-  price: z.union([z.string(), z.number()]).optional(),
   categoryId: z.string().min(1, "Category is required"),
-  imageFileId: z.string().optional(),
-  imageFileName: z.string().optional(),
-  instagramReelUrl: z
-    .string()
-    .trim()
-    .optional()
-    .or(z.literal(""))
-    .refine((value) => !value || getInstagramReelEmbedUrl(value), "Enter a valid Instagram Reel URL"),
-  tiktokReelUrl: z
-    .string()
-    .trim()
-    .optional()
-    .or(z.literal(""))
-    .refine((value) => !value || getTikTokEmbedUrl(value), "Enter a valid TikTok video URL"),
+  mediaAssetId: z.string().optional(),
 });
 
 export async function GET() {
@@ -34,7 +19,7 @@ export async function GET() {
   }
 
   const items = await prisma.collectionItem.findMany({
-    include: { category: true },
+    include: { category: true, mediaAsset: true },
     orderBy: { createdAt: "desc" },
   });
 
@@ -59,18 +44,25 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Category not found" }, { status: 404 });
     }
 
+    if (parsed.mediaAssetId) {
+      const asset = await prisma.mediaAsset.findFirst({
+        where: { id: parsed.mediaAssetId, mediaType: "IMAGE" },
+        select: { id: true },
+      });
+      if (!asset) {
+        return NextResponse.json({ error: "Choose an image from the media library" }, { status: 400 });
+      }
+    }
+
     const item = await prisma.collectionItem.create({
       data: {
         name: parsed.name,
         description: parsed.description,
-        price: parsed.price !== undefined && parsed.price !== "" ? parsed.price : null,
         categoryId: parsed.categoryId,
-        imageFileId: parsed.imageFileId,
-        imageFileName: parsed.imageFileName,
-        instagramReelUrl: parsed.instagramReelUrl || null,
-        tiktokReelUrl: parsed.tiktokReelUrl || null,
+        mediaAssetId: parsed.mediaAssetId,
+        published: false,
       },
-      include: { category: true },
+      include: { category: true, mediaAsset: true },
     });
 
     return NextResponse.json(item, { status: 201 });
@@ -78,6 +70,7 @@ export async function POST(request: Request) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.issues[0].message }, { status: 400 });
     }
-    return NextResponse.json({ error: "Failed to create collection item" }, { status: 500 });
+    console.error("[admin programmes] Failed to create programme", error);
+    return NextResponse.json({ error: "Failed to create programme" }, { status: 500 });
   }
 }

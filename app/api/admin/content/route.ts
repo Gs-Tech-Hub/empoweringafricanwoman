@@ -5,13 +5,26 @@ import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
+const contentEntrySchema = z.object({
+  section: z.string().trim().min(1).max(80),
+  field: z.string().trim().min(1).max(80),
+  value: z.string().max(10000).optional(),
+  mediaAssetId: z.string().trim().optional().or(z.literal("")),
+});
+
 const contentSchema = z.object({
+  page: z.enum([
+    "home",
+    "about",
+    "programmes",
+    "impact",
+    "stories",
+    "locations",
+    "donate",
+    "site",
+  ]),
   region: z.enum(["africa", "canada", "us", "global"]),
-  heroEyebrow: z.string().trim().max(120),
-  heroTitle: z.string().trim().min(1).max(240),
-  heroDescription: z.string().trim().max(2000),
-  heroMediaId: z.string().trim().optional().or(z.literal("")),
-  aboutLead: z.string().trim().max(2000),
+  entries: z.array(contentEntrySchema).max(200),
 });
 
 export async function PUT(request: Request) {
@@ -22,55 +35,72 @@ export async function PUT(request: Request) {
 
   try {
     const parsed = contentSchema.parse(await request.json());
-    const mediaAssetId = parsed.heroMediaId || null;
+    const keys = parsed.entries.map(({ section, field }) => `${section}\u0000${field}`);
+    if (new Set(keys).size !== keys.length) {
+      return NextResponse.json(
+        { error: "Each section and field combination must be unique" },
+        { status: 400 },
+      );
+    }
 
-    if (mediaAssetId) {
-      const media = await prisma.mediaAsset.findUnique({
-        where: { id: mediaAssetId },
-        select: { mediaType: true },
+    const assetIds = Array.from(
+      new Set(
+        parsed.entries
+          .map((entry) => entry.mediaAssetId)
+          .filter((id): id is string => Boolean(id)),
+      ),
+    );
+    if (assetIds.length) {
+      const assetCount = await prisma.mediaAsset.count({
+        where: { id: { in: assetIds } },
       });
-
-      if (!media || !["IMAGE", "VIDEO"].includes(media.mediaType)) {
-        return NextResponse.json(
-          { error: "Choose an image or video from the media library" },
-          { status: 400 },
-        );
+      if (assetCount !== assetIds.length) {
+        return NextResponse.json({ error: "A selected media asset was not found" }, { status: 400 });
       }
     }
 
-    const fields = [
-      { section: "hero", field: "eyebrow", value: parsed.heroEyebrow },
-      { section: "hero", field: "title", value: parsed.heroTitle },
-      { section: "hero", field: "description", value: parsed.heroDescription },
-      { section: "hero", field: "media", value: null, mediaAssetId },
-      { section: "about", field: "lead", value: parsed.aboutLead },
-    ];
-
-    await prisma.$transaction(
-      fields.map(({ section, field, value, ...optionalMedia }) =>
+    const operations = [
+      prisma.siteContent.deleteMany({
+        where: {
+          page: parsed.page,
+          region: parsed.region,
+          ...(parsed.entries.length
+            ? {
+                NOT: {
+                  OR: parsed.entries.map(({ section, field }) => ({ section, field })),
+                },
+              }
+            : {}),
+        },
+      }),
+      ...parsed.entries.map(({ section, field, value, mediaAssetId }) =>
         prisma.siteContent.upsert({
           where: {
             page_region_section_field: {
-              page: "home",
+              page: parsed.page,
               region: parsed.region,
               section,
               field,
             },
           },
           create: {
-            page: "home",
+            page: parsed.page,
             region: parsed.region,
             section,
             field,
-            value,
-            ...optionalMedia,
+            value: value ?? null,
+            mediaAssetId: mediaAssetId || null,
           },
-          update: { value, ...optionalMedia },
+          update: {
+            value: value ?? null,
+            mediaAssetId: mediaAssetId || null,
+          },
         }),
       ),
-    );
+    ];
 
-    return NextResponse.json({ success: true });
+    await prisma.$transaction(operations);
+    return NextResponse.json({ success: true, count: parsed.entries.length });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.issues[0].message }, { status: 400 });

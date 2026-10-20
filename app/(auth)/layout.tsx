@@ -1,15 +1,9 @@
-import PageIllustration from "@/components/page-illustration";
-
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <main className="relative flex grow flex-col">
-      <PageIllustration />
-
-      {children}
-    </main>
+    <main className="relative flex min-h-screen grow flex-col bg-brand-cream">{children}</main>
   );
 }

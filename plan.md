@@ -10,19 +10,19 @@ todos:
     status: in_progress
   - id: homepage-sections
     content: Implement components/home/* + layout/*; replace single.tsx homepage; wire Category/CollectionItem/Review/Branch via lib/queries.ts
-    status: pending
+    status: done
   - id: public-routes
     content: Add/about/programmes/impact/stories/donate routes; redirects from /collections, /reviews, /flagship; update metadata sitewide
-    status: pending
+    status: done
   - id: regional-netlify
     content: Add content/*.ts, regional pages, RegionSelector + site-region cookie, netlify.toml + edge-functions/region.ts
-    status: pending
+    status: in_progress
   - id: donations-flutterwave
     content: Add Donation model migration; lib/payments/flutterwave.ts; POST /api/donations + webhook; DonationForm + success page
     status: pending
   - id: admin-seed-qa
     content: Relabel admin UI; charity prisma/seed.ts; vitest/playwright smoke tests; Netlify env docs and production build verification
-    status: pending
+    status: in_progress
 isProject: false
 ---
 
