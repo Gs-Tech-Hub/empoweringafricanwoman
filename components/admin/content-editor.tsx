@@ -103,9 +103,11 @@ export default function ContentEditor({
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="rounded-xl border border-brand-border bg-brand-ivory p-4 text-sm leading-relaxed text-brand-muted">
         Use a section name for a group, then a field name for its value. For repeatable homepage
-        cards, use sections such as <code>pillar:education</code> or <code>target:example</code>;
-        available fields include <code>title</code>, <code>description</code>, <code>value</code>,
-        <code>order</code>, and <code>icon</code>. Content and media are stored per selected region.
+        cards, use sections such as <code>pillar:education</code>, <code>target:example</code>, or
+        <code>activity:workshop</code>; attach an image or video with the <code>media</code> field.
+        Site-wide contact details can be entered on the Site-wide content page using the{" "}
+        <code>contact</code> section and <code>email</code>, <code>phone</code>, and{" "}
+        <code>address</code> fields. Content and media are stored per selected region.
       </div>
 
       {entries.length === 0 ? (

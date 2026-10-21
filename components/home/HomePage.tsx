@@ -10,6 +10,7 @@ import {
 } from "@/lib/content/site-content";
 import { getMediaUrl } from "@/lib/utils";
 import { AboutSection } from "./AboutSection";
+import { ActivitiesSection } from "./ActivitiesSection";
 import { DonationSection } from "./DonationSection";
 import { HeroSection } from "./HeroSection";
 import { ImpactSection } from "./ImpactSection";
@@ -59,6 +60,7 @@ export default async function HomePage({ regionId = "global" }: HomePageProps) {
       <ProgrammePillars content={pageContent} />
       <ImpactSection content={pageContent} />
       <ProgrammesSection programmes={programmes} content={pageContent} />
+      <ActivitiesSection content={pageContent} />
       <StoriesSection stories={stories} content={pageContent} />
       <DonationSection
         eyebrow={getContentValue(pageContent, "donation", "eyebrow")}

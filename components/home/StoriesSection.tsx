@@ -8,7 +8,11 @@ type Story = {
   authorName: string;
   content: string;
   title: string | null;
-  mediaAsset: { id: string; altText: string | null } | null;
+  mediaAsset: {
+    id: string;
+    altText: string | null;
+    mediaType: "IMAGE" | "VIDEO" | "AUDIO" | "DOCUMENT";
+  } | null;
 };
 
 type StoriesSectionProps = {
@@ -52,13 +56,21 @@ export function StoriesSection({ stories, content }: StoriesSectionProps) {
               data-aos="fade-up"
               data-aos-delay={index * 80}
             >
-              {story.mediaAsset ? (
+              {story.mediaAsset?.mediaType === "IMAGE" ? (
                 <Image
                   src={getMediaUrl(story.mediaAsset)!}
                   alt={story.mediaAsset.altText ?? ""}
                   width={600}
                   height={400}
                   unoptimized
+                  className="mb-5 aspect-[4/3] w-full rounded-lg object-cover"
+                />
+              ) : story.mediaAsset?.mediaType === "VIDEO" ? (
+                <video
+                  src={getMediaUrl(story.mediaAsset)!}
+                  controls
+                  preload="metadata"
+                  aria-label={story.mediaAsset.altText || story.title || "Story video"}
                   className="mb-5 aspect-[4/3] w-full rounded-lg object-cover"
                 />
               ) : null}

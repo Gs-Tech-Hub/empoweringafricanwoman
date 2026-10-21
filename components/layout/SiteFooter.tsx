@@ -5,6 +5,8 @@ import { footerNavLinks, governanceLinks } from "@/config/navigation";
 type SiteFooterProps = {
   description?: string;
   email?: string;
+  phone?: string;
+  address?: string;
   instagram?: string;
   linkedin?: string;
 };
@@ -12,6 +14,8 @@ type SiteFooterProps = {
 export default function SiteFooter({
   description,
   email,
+  phone,
+  address,
   instagram,
   linkedin,
 }: SiteFooterProps) {
@@ -31,16 +35,33 @@ export default function SiteFooter({
             {description ? (
               <p className="max-w-sm text-sm leading-relaxed text-brand-muted">{description}</p>
             ) : null}
-            {email ? (
-              <p className="text-sm text-brand-muted">
-                <a className="hover:text-brand-accent" href={`mailto:${email}`}>
-                  {email}
-                </a>
-              </p>
-            ) : null}
           </div>
 
           <div>
+            {email || phone || address ? (
+              <>
+                <h2 className="eyebrow mb-4">Contact</h2>
+                <address className="mb-6 space-y-2 text-sm not-italic text-brand-muted">
+                  {email ? (
+                    <p>
+                      Email:{" "}
+                      <a className="hover:text-brand-accent" href={`mailto:${email}`}>
+                        {email}
+                      </a>
+                    </p>
+                  ) : null}
+                  {phone ? (
+                    <p>
+                      Phone:{" "}
+                      <a className="hover:text-brand-accent" href={`tel:${phone}`}>
+                        {phone}
+                      </a>
+                    </p>
+                  ) : null}
+                  {address ? <p className="whitespace-pre-line">{address}</p> : null}
+                </address>
+              </>
+            ) : null}
             <h2 className="eyebrow mb-4">Explore</h2>
             <ul className="space-y-2 text-sm">
               {footerNavLinks.map((link) => (

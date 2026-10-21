@@ -17,7 +17,12 @@ export default async function DefaultLayout({
       <main className="relative flex grow flex-col">{children}</main>
       <SiteFooter
         description={getContentValue(content, "footer", "description")}
-        email={getContentValue(content, "footer", "email")}
+        email={
+          getContentValue(content, "contact", "email") ||
+          getContentValue(content, "footer", "email")
+        }
+        phone={getContentValue(content, "contact", "phone")}
+        address={getContentValue(content, "contact", "address")}
         instagram={getContentValue(content, "social", "instagram")}
         linkedin={getContentValue(content, "social", "linkedin")}
       />

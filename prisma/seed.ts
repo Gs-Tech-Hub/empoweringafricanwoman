@@ -15,6 +15,13 @@ const initialPageLabels = [
   { page: "home", section: "programmes", field: "title", value: "Programmes" },
   { page: "home", section: "programmes", field: "description", value: "Practical support across livelihoods, learning, health, and leadership." },
   { page: "home", section: "stories", field: "title", value: "Stories" },
+  { page: "home", section: "activities", field: "eyebrow", value: "In focus" },
+  { page: "home", section: "activities", field: "title", value: "Activities & community work" },
+  { page: "home", section: "activities", field: "description", value: "Explore programme areas through the images and stories shared by our team." },
+  { page: "home", section: "activity:learning", field: "title", value: "Learning & digital skills" },
+  { page: "home", section: "activity:learning", field: "description", value: "Training, digital access, and learning opportunities." },
+  { page: "home", section: "activity:enterprise", field: "title", value: "Enterprise & livelihoods" },
+  { page: "home", section: "activity:enterprise", field: "description", value: "Business support and sustainable livelihood opportunities." },
   { page: "home", section: "donation", field: "eyebrow", value: "Support today" },
   { page: "home", section: "donation", field: "title", value: "Help women grow stronger futures" },
   { page: "home", section: "donation", field: "description", value: "Your support helps fund practical programmes that strengthen women’s skills, livelihoods, health, and leadership." },
@@ -191,6 +198,44 @@ async function ensureDefaultContent() {
       mediaAssetId: marketAsset.id,
     },
     update: { mediaAssetId: marketAsset.id },
+  });
+
+  await prisma.siteContent.upsert({
+    where: {
+      page_region_section_field: {
+        page: "home",
+        region: "global",
+        section: "activity:learning",
+        field: "media",
+      },
+    },
+    create: {
+      page: "home",
+      region: "global",
+      section: "activity:learning",
+      field: "media",
+      mediaAssetId: heroAsset.id,
+    },
+    update: { mediaAssetId: heroAsset.id },
+  });
+
+  await prisma.siteContent.upsert({
+    where: {
+      page_region_section_field: {
+        page: "home",
+        region: "global",
+        section: "activity:enterprise",
+        field: "media",
+      },
+    },
+    create: {
+      page: "home",
+      region: "global",
+      section: "activity:enterprise",
+      field: "media",
+      mediaAssetId: programmeAsset.id,
+    },
+    update: { mediaAssetId: programmeAsset.id },
   });
 }
 
