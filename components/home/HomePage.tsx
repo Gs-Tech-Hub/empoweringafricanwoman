@@ -9,6 +9,7 @@ import {
   getPageContent,
 } from "@/lib/content/site-content";
 import { getMediaUrl } from "@/lib/utils";
+import PeopleSections from "@/components/content/PeopleSections";
 import { AboutSection } from "./AboutSection";
 import { ActivitiesSection } from "./ActivitiesSection";
 import { DonationSection } from "./DonationSection";
@@ -57,6 +58,7 @@ export default async function HomePage({ regionId = "global" }: HomePageProps) {
           description: fields.description?.value ?? "",
         }))}
       />
+      <PeopleSections content={pageContent} />
       <ProgrammePillars content={pageContent} />
       <ImpactSection content={pageContent} />
       <ProgrammesSection programmes={programmes} content={pageContent} />

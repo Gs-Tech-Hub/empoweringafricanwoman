@@ -1,4 +1,5 @@
 import SiteFooter from "@/components/layout/SiteFooter";
+import SiteHeader from "@/components/layout/SiteHeader";
 import { getPageContent, getContentValue } from "@/lib/content/site-content";
 import { getCurrentRegion } from "@/lib/region/get-current-region";
 
@@ -11,20 +12,23 @@ export default async function DefaultLayout({
 }) {
   const region = await getCurrentRegion();
   const content = await getPageContent("site", region);
+  const email =
+    getContentValue(content, "contact", "email") ||
+    getContentValue(content, "footer", "email");
+  const phone = getContentValue(content, "contact", "phone");
 
   return (
     <>
+      <SiteHeader email={email} phone={phone} />
       <main className="relative flex grow flex-col">{children}</main>
       <SiteFooter
-        description={getContentValue(content, "footer", "description")}
-        email={
-          getContentValue(content, "contact", "email") ||
-          getContentValue(content, "footer", "email")
-        }
-        phone={getContentValue(content, "contact", "phone")}
-        address={getContentValue(content, "contact", "address")}
+        email={email}
+        phone={phone}
+        facebook={getContentValue(content, "social", "facebook")}
         instagram={getContentValue(content, "social", "instagram")}
+        x={getContentValue(content, "social", "x")}
         linkedin={getContentValue(content, "social", "linkedin")}
+        youtube={getContentValue(content, "social", "youtube")}
       />
     </>
   );

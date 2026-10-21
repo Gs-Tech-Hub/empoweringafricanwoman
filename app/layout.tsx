@@ -2,7 +2,6 @@ import "./css/style.css";
 
 import { Inter, Playfair_Display } from "next/font/google";
 
-import SiteHeader from "@/components/layout/SiteHeader";
 import { brand } from "@/config/brand";
 
 const playfair = Playfair_Display({
@@ -37,7 +36,6 @@ export default function RootLayout({
         className={`${playfair.variable} ${inter.variable} bg-brand-cream font-body text-base text-brand-text antialiased`}
       >
         <div className="flex min-h-screen flex-col overflow-hidden supports-[overflow:clip]:overflow-clip">
-          <SiteHeader />
           {children}
         </div>
       </body>

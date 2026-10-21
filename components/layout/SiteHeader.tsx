@@ -3,11 +3,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { mainNavLinks } from "@/config/navigation";
-import { brand } from "@/config/brand";
+import Brand from "@/components/ui/brand";
 import type { RegionId } from "@/config/regions";
 import { isRegionId } from "@/config/regions";
 import MobileMenu from "./MobileMenu";
 import RegionSelector from "./RegionSelector";
+
+type SiteHeaderProps = {
+  email?: string;
+  phone?: string;
+};
 
 function regionFromPathname(pathname: string): RegionId | undefined {
   const segment = pathname.split("/").filter(Boolean)[0];
@@ -17,7 +22,7 @@ function regionFromPathname(pathname: string): RegionId | undefined {
   return undefined;
 }
 
-export default function SiteHeader() {
+export default function SiteHeader({ email, phone }: SiteHeaderProps) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
 
@@ -29,17 +34,27 @@ export default function SiteHeader() {
 
   return (
     <header className="relative z-40 w-full border-b border-brand-border/70 bg-brand-light/90 backdrop-blur-md">
-      <div className="content-container flex h-16 items-center justify-between gap-4 md:h-20">
-        <Link href="/" className="flex shrink-0 items-center gap-3">
-          <span aria-hidden="true" className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-brand-primary font-heading text-xs font-semibold tracking-wide text-brand-ivory md:h-11 md:w-11">
-            EAW
-          </span>
-          <span className="hidden max-w-40 font-heading text-sm font-semibold leading-tight text-brand-charcoal lg:block">
-            {brand.name}
-          </span>
-        </Link>
+      {email || phone ? (
+        <div className="border-b border-brand-border/50">
+          <address className="content-container flex flex-wrap items-center justify-center gap-x-5 gap-y-1 py-2 text-xs not-italic text-brand-muted md:justify-end">
+            {email ? (
+              <a className="break-all hover:text-brand-accent" href={`mailto:${email}`}>
+                Email: {email}
+              </a>
+            ) : null}
+            {phone ? (
+              <a className="hover:text-brand-accent" href={`tel:${phone}`}>
+                Phone: {phone}
+              </a>
+            ) : null}
+          </address>
+        </div>
+      ) : null}
 
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
+      <div className="content-container flex min-h-16 items-center justify-between gap-4 py-2 md:min-h-20">
+        <Brand asLink size="sm" priority className="shrink-0" />
+
+        <nav className="hidden items-center gap-1 xl:flex" aria-label="Main">
           {mainNavLinks.map((link) => {
             const isActive = pathname === link.href || pathname.startsWith(`${link.href}/`);
             return (
@@ -59,7 +74,7 @@ export default function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2 md:gap-3">
-          <div className="hidden md:block">
+          <div className="hidden xl:block">
             <RegionSelector currentRegion={currentRegion ?? "global"} />
           </div>
           <Link href="/donate" className="btn-sm button-primary hidden sm:inline-flex">

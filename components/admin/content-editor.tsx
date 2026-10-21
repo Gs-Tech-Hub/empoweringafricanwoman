@@ -105,6 +105,13 @@ export default function ContentEditor({
         Use a section name for a group, then a field name for its value. For repeatable homepage
         cards, use sections such as <code>pillar:education</code>, <code>target:example</code>, or
         <code>activity:workshop</code>; attach an image or video with the <code>media</code> field.
+        For the founder profile, add fields under <code>founder</code>: <code>name</code>,{" "}
+        <code>role</code>, <code>bio</code>, optional <code>eyebrow</code>/<code>title</code>, and
+        an optional image in <code>media</code>. For the team heading use <code>team</code> with
+        optional <code>eyebrow</code>, <code>title</code>, and <code>description</code>; add each
+        person under a unique section such as <code>team:person-one</code> with <code>name</code>,
+        optional <code>role</code>/<code>bio</code>/<code>order</code>, and an optional image in{" "}
+        <code>media</code>. The founder and team sections appear only when profile content exists.
         Site-wide contact details can be entered on the Site-wide content page using the{" "}
         <code>contact</code> section and <code>email</code>, <code>phone</code>, and{" "}
         <code>address</code> fields. Content and media are stored per selected region.

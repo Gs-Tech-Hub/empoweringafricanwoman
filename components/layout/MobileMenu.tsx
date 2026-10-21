@@ -21,7 +21,7 @@ export default function MobileMenu({ currentRegion }: MobileMenuProps) {
   }, [pathname]);
 
   return (
-    <div className="md:hidden">
+    <div className="xl:hidden">
       <button
         type="button"
         className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-brand-charcoal"

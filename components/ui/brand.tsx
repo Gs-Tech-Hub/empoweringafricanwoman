@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { brand } from "@/config/brand";
 
 export default function Brand({
@@ -6,11 +7,13 @@ export default function Brand({
   size = "md",
   asLink = false,
   href = "/",
+  priority = false,
 }: {
   className?: string;
   size?: "sm" | "md" | "lg" | "xl";
   asLink?: boolean;
   href?: string;
+  priority?: boolean;
 }) {
   const sizeMap: Record<string, string> = {
     sm: "text-sm",
@@ -20,15 +23,20 @@ export default function Brand({
   };
 
   const content = (
-    <span className={`inline-flex items-center gap-3 ${className}`}>
-      <span
-        aria-hidden="true"
-        className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-primary font-heading text-xs font-semibold tracking-wide text-brand-ivory"
-      >
-        EAW
-      </span>
-      <span className={`font-heading font-semibold leading-tight text-brand-primary ${sizeMap[size]}`}>
-        {brand.name}
+    <span className={`inline-flex items-center gap-2.5 ${className}`}>
+      <Image
+        src="/images/logo.jpeg"
+        alt=""
+        width={48}
+        height={48}
+        priority={priority}
+        className="h-11 w-11 shrink-0 object-contain"
+      />
+      <span className="flex flex-col leading-tight">
+        <span className={`font-heading font-semibold uppercase text-brand-primary ${sizeMap[size]}`}>
+          {brand.name}
+        </span>
+      
       </span>
     </span>
   );
