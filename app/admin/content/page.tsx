@@ -1,24 +1,15 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import ContentEditor from "@/components/admin/content-editor";
 import ContentFilters from "@/components/admin/content-filters";
+import { adminPages, isAdminPageId } from "@/config/admin-pages";
 import { regionList, isRegionId } from "@/config/regions";
 import { auth } from "@/lib/auth";
 import { getRegionalContentEntries } from "@/lib/content/site-content";
 import { prisma } from "@/lib/prisma";
 
-const contentPages = [
-  "home",
-  "about",
-  "programmes",
-  "impact",
-  "stories",
-  "locations",
-  "donate",
-  "site",
-] as const;
-
 export const metadata = {
-  title: "Manage Website Content",
+  title: "Page Editor",
 };
 
 export default async function AdminContentPage({
@@ -32,9 +23,10 @@ export default async function AdminContentPage({
   }
 
   const params = await searchParams;
-  const page = contentPages.includes(params.page as (typeof contentPages)[number])
-    ? (params.page as (typeof contentPages)[number])
-    : "home";
+  const page = params.page && isAdminPageId(params.page) ? params.page : "home";
+  const pageDetails = adminPages.find((item) => item.id === page);
+  const relatedTool =
+    pageDetails && "relatedTool" in pageDetails ? pageDetails.relatedTool : undefined;
   const region = params.region && isRegionId(params.region) ? params.region : "global";
   const [entries, media] = await Promise.all([
     getRegionalContentEntries(region, page),
@@ -47,20 +39,28 @@ export default async function AdminContentPage({
   return (
     <div className="space-y-8">
       <div>
-        <p className="section-subtitle">Manage</p>
-        <h1 className="mt-2 font-heading text-3xl font-semibold text-brand-primary">
-          Website Content
+        <p className="section-subtitle">Page editor</p>
+        <h1 className="mt-2 font-heading text-3xl font-light text-brand-primary">
+          {pageDetails?.title}
         </h1>
-        <p className="mt-2 text-brand-muted">
-          Edit public page content and attach assets from the media library. Global content is the
-          shared version; a regional entry overrides it for that region.
+        <p className="mt-2 max-w-3xl text-brand-muted">
+          {pageDetails?.description} Choose a region below to edit its content. Regional entries
+          override the shared global version.
         </p>
+        {relatedTool ? (
+          <Link
+            href={relatedTool.href}
+            className="mt-3 inline-flex text-sm font-medium text-brand-primary underline underline-offset-4"
+          >
+            {relatedTool.label}
+          </Link>
+        ) : null}
       </div>
 
       <ContentFilters
         page={page}
         region={region}
-        pages={contentPages}
+        pages={adminPages}
         regions={regionList}
       />
 

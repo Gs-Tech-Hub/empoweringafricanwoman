@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 type ContentFiltersProps = {
   page: string;
   region: string;
-  pages: readonly string[];
+  pages: readonly { id: string; title: string }[];
   regions: Array<{ id: string; label: string }>;
 };
 
@@ -33,8 +33,8 @@ export default function ContentFilters({ page, region, pages, regions }: Content
           className="form-select w-full"
         >
           {pages.map((item) => (
-            <option key={item} value={item}>
-              {item === "site" ? "Site-wide content" : item}
+            <option key={item.id} value={item.id}>
+              {item.title}
             </option>
           ))}
         </select>

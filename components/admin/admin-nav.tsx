@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
-  { href: "/admin", label: "Dashboard", exact: true },
-  { href: "/admin/content", label: "Website Content", exact: false },
+  { href: "/admin", label: "Website Pages", exact: true },
+  { href: "/admin/content", label: "Page Editor", exact: false },
   { href: "/admin/media", label: "Media Library", exact: false },
   { href: "/admin/stories", label: "Stories", exact: false },
   { href: "/admin/locations", label: "Locations", exact: false },
@@ -15,6 +15,10 @@ const navLinks = [
 
 export default function AdminNav() {
   const pathname = usePathname();
+
+  if (pathname === "/admin") {
+    return null;
+  }
 
   return (
     <nav className="mb-8 flex flex-wrap gap-2">
