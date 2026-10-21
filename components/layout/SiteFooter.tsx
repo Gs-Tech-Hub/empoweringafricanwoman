@@ -4,6 +4,7 @@ import Brand from "@/components/ui/brand";
 type SiteFooterProps = {
   email?: string;
   phone?: string;
+  address?: string;
   facebook?: string;
   instagram?: string;
   x?: string;
@@ -22,6 +23,7 @@ const socialMarks = {
 export default function SiteFooter({
   email,
   phone,
+  address,
   facebook,
   instagram,
   x,
@@ -88,6 +90,11 @@ export default function SiteFooter({
           </a>
         </nav>
       </div>
+      {address ? (
+        <address className="border-t border-brand-border/70 px-4 py-3 text-center text-xs not-italic text-brand-muted">
+          {address}
+        </address>
+      ) : null}
     </footer>
   );
 }

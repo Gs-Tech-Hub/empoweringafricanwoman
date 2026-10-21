@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Brand from "@/components/ui/brand";
 import { auth, signOut } from "@/lib/auth";
-import AdminNav from "@/components/admin/admin-nav";
 
 export default async function AdminLayout({
   children,
@@ -52,7 +51,6 @@ export default async function AdminLayout({
 
       {session ? (
         <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-          <AdminNav />
           {children}
         </div>
       ) : (

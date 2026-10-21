@@ -16,6 +16,7 @@ export default async function DefaultLayout({
     getContentValue(content, "contact", "email") ||
     getContentValue(content, "footer", "email");
   const phone = getContentValue(content, "contact", "phone");
+  const address = getContentValue(content, "contact", "address");
 
   return (
     <>
@@ -24,6 +25,7 @@ export default async function DefaultLayout({
       <SiteFooter
         email={email}
         phone={phone}
+        address={address}
         facebook={getContentValue(content, "social", "facebook")}
         instagram={getContentValue(content, "social", "instagram")}
         x={getContentValue(content, "social", "x")}

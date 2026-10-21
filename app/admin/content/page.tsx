@@ -2,11 +2,13 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import ContentEditor from "@/components/admin/content-editor";
 import ContentFilters from "@/components/admin/content-filters";
+import { adminContentDefinitions } from "@/config/admin-content";
 import { adminPages, isAdminPageId } from "@/config/admin-pages";
 import { regionList, isRegionId } from "@/config/regions";
 import { auth } from "@/lib/auth";
 import { getRegionalContentEntries } from "@/lib/content/site-content";
 import { prisma } from "@/lib/prisma";
+import { getMediaUrl } from "@/lib/utils";
 
 export const metadata = {
   title: "Page Editor",
@@ -31,7 +33,7 @@ export default async function AdminContentPage({
   const [entries, media] = await Promise.all([
     getRegionalContentEntries(region, page),
     prisma.mediaAsset.findMany({
-      select: { id: true, fileName: true, mediaType: true },
+      select: { id: true, fileId: true, fileName: true, mediaType: true, altText: true },
       orderBy: { createdAt: "desc" },
     }),
   ]);
@@ -68,6 +70,7 @@ export default async function AdminContentPage({
         key={`${page}-${region}`}
         page={page}
         region={region}
+        definition={adminContentDefinitions[page]}
         initialEntries={entries.map((entry) => ({
           id: entry.id,
           section: entry.section,
@@ -75,7 +78,13 @@ export default async function AdminContentPage({
           value: entry.value ?? "",
           mediaAssetId: entry.mediaAssetId ?? "",
         }))}
-        media={media}
+        media={media.map((asset) => ({
+          id: asset.id,
+          fileName: asset.fileName,
+          mediaType: asset.mediaType,
+          url: getMediaUrl(asset)!,
+          altText: asset.altText,
+        }))}
       />
     </div>
   );

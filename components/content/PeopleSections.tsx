@@ -20,6 +20,9 @@ export default function PeopleSections({ content }: PeopleSectionsProps) {
   const teamMembers = getContentSections(content, "team").filter(
     ({ fields }) => Boolean(fields.name?.value),
   );
+  const teamMedia = content.team?.media?.mediaAsset;
+  const teamImageUrl =
+    teamMedia?.mediaType === "IMAGE" ? getMediaUrl(teamMedia) : null;
 
   return (
     <>
@@ -68,21 +71,39 @@ export default function PeopleSections({ content }: PeopleSectionsProps) {
         </section>
       ) : null}
 
-      {teamMembers.length > 0 ? (
+      {teamMembers.length > 0 || teamImageUrl ? (
         <section className="bg-brand-cream py-16 md:py-24">
           <div className="content-container">
-            <div className="mx-auto max-w-3xl text-center">
-              {getContentValue(content, "team", "eyebrow") ? (
-                <p className="eyebrow mb-4">{getContentValue(content, "team", "eyebrow")}</p>
-              ) : null}
-              <div className="gold-divider mb-6" />
-              <h2 className="section-heading">
-                {getContentValue(content, "team", "title") || "Meet our team"}
-              </h2>
-              {getContentValue(content, "team", "description") ? (
-                <p className="mt-5 text-lg leading-relaxed text-brand-muted">
-                  {getContentValue(content, "team", "description")}
-                </p>
+            <div
+              className={
+                teamImageUrl
+                  ? "mx-auto grid max-w-5xl items-center gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,0.65fr)] md:gap-12"
+                  : "mx-auto max-w-3xl text-center"
+              }
+            >
+              <div className={teamImageUrl ? "text-center md:text-left" : ""}>
+                {getContentValue(content, "team", "eyebrow") ? (
+                  <p className="eyebrow mb-4">{getContentValue(content, "team", "eyebrow")}</p>
+                ) : null}
+                <div className="gold-divider mb-6" />
+                <h2 className="section-heading">
+                  {getContentValue(content, "team", "title") || "Meet our team"}
+                </h2>
+                {getContentValue(content, "team", "description") ? (
+                  <p className="mt-5 text-lg leading-relaxed text-brand-muted">
+                    {getContentValue(content, "team", "description")}
+                  </p>
+                ) : null}
+              </div>
+              {teamImageUrl && teamMedia ? (
+                <Image
+                  src={teamImageUrl}
+                  alt={teamMedia.altText || "Our team"}
+                  width={720}
+                  height={540}
+                  unoptimized
+                  className="mx-auto aspect-[4/3] w-full max-w-md rounded-[var(--radius-image)] object-cover md:ml-auto"
+                />
               ) : null}
             </div>
 
