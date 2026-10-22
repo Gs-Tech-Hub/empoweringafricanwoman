@@ -12,7 +12,7 @@ const updateStorySchema = z.object({
   region: z.enum(["africa", "canada", "us", "global"]).optional(),
   consentConfirmed: z.boolean().optional(),
   published: z.boolean().optional(),
-  mediaAssetId: z.string().trim().optional().or(z.literal("")),
+  mediaAssetId: z.string().trim().nullable().optional(),
 });
 
 export async function PATCH(
@@ -46,11 +46,14 @@ export async function PATCH(
 
     if (parsed.mediaAssetId) {
       const media = await prisma.mediaAsset.findFirst({
-        where: { id: parsed.mediaAssetId, mediaType: "IMAGE" },
+        where: { id: parsed.mediaAssetId, mediaType: { in: ["IMAGE", "VIDEO"] } },
         select: { id: true },
       });
       if (!media) {
-        return NextResponse.json({ error: "Choose an image from the media library" }, { status: 400 });
+        return NextResponse.json(
+          { error: "Choose an image or video from the media library" },
+          { status: 400 },
+        );
       }
     }
 

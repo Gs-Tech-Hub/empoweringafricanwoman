@@ -1,7 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { PageContent } from "@/lib/content/site-content";
-import { getMediaUrl } from "@/lib/utils";
+import BeneficiaryStoryCard from "@/components/content/BeneficiaryStoryCard";
 
 type Story = {
   id: string;
@@ -50,40 +49,13 @@ export function StoriesSection({ stories, content }: StoriesSectionProps) {
 
         <div className="grid gap-6 md:grid-cols-3">
           {featured.map((story, index) => (
-            <blockquote
+            <div
               key={story.id}
-              className="card-programme flex flex-col p-6"
               data-aos="fade-up"
               data-aos-delay={index * 80}
             >
-              {story.mediaAsset?.mediaType === "IMAGE" ? (
-                <Image
-                  src={getMediaUrl(story.mediaAsset)!}
-                  alt={story.mediaAsset.altText ?? ""}
-                  width={600}
-                  height={400}
-                  unoptimized
-                  className="mb-5 aspect-[4/3] w-full rounded-lg object-cover"
-                />
-              ) : story.mediaAsset?.mediaType === "VIDEO" ? (
-                <video
-                  src={getMediaUrl(story.mediaAsset)!}
-                  controls
-                  preload="metadata"
-                  aria-label={story.mediaAsset.altText || story.title || "Story video"}
-                  className="mb-5 aspect-[4/3] w-full rounded-lg object-cover"
-                />
-              ) : null}
-              {story.title ? (
-                <h3 className="mb-3 font-heading text-lg font-semibold text-brand-primary">
-                  {story.title}
-                </h3>
-              ) : null}
-              <p className="flex-1 text-sm leading-relaxed text-brand-muted">&ldquo;{story.content}&rdquo;</p>
-              <footer className="mt-4 text-sm font-semibold text-brand-charcoal">
-                — {story.authorName}
-              </footer>
-            </blockquote>
+              <BeneficiaryStoryCard story={story} compact />
+            </div>
           ))}
         </div>
       </div>

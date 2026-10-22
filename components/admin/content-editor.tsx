@@ -51,6 +51,9 @@ function getAllowedMediaTypes(page: string, section: string) {
   if (page === "home" && (section === "hero" || section.startsWith("activity:"))) {
     return ["IMAGE", "VIDEO"];
   }
+  if (section.startsWith("planned-event:") || section.startsWith("impact-event:")) {
+    return ["IMAGE", "VIDEO"];
+  }
   if (section === "founder" || section.startsWith("team:")) {
     return ["IMAGE"];
   }
@@ -241,7 +244,7 @@ export default function ContentEditor({
       );
     }
 
-    if (field.kind === "icon" || field.kind === "status") {
+    if (field.kind === "icon" || field.kind === "status" || field.kind === "event-status") {
       const choices =
         field.kind === "icon"
           ? [
@@ -252,10 +255,21 @@ export default function ContentEditor({
               ["health", "Health"],
               ["users", "People"],
             ]
-          : [
+          : field.kind === "event-status"
+            ? [
+                ["draft", "Draft — hidden from the public site"],
+                ["published", "Published"],
+              ]
+            : [
               ["target", "Target — unverified / planned"],
               ["verified", "Verified"],
             ];
+      const defaultChoice =
+        field.kind === "event-status"
+          ? "draft"
+          : field.kind === "status"
+            ? "target"
+            : "book-open";
       return (
         <div>
           <label htmlFor={id} className="mb-1 block text-sm font-medium text-brand-text">
@@ -263,7 +277,7 @@ export default function ContentEditor({
           </label>
           <select
             id={id}
-            value={value || (field.kind === "status" ? "target" : "book-open")}
+            value={value || defaultChoice}
             onChange={(event) => setField(section, field.field, { value: event.target.value })}
             className="form-select w-full"
           >
@@ -295,9 +309,12 @@ export default function ContentEditor({
         ) : (
           <input
             id={id}
+            type={field.kind === "date" || field.kind === "url" ? field.kind : "text"}
             value={value}
             onChange={(event) => setField(section, field.field, { value: event.target.value })}
             maxLength={10000}
+            required={field.required}
+            placeholder={field.kind === "url" ? "https://" : undefined}
             className="form-input w-full"
           />
         )}
@@ -320,7 +337,11 @@ export default function ContentEditor({
           {group.fields.map((field) => (
             <div
               key={field.field}
-              className={field.kind === "textarea" || field.kind === "media" ? "md:col-span-2" : ""}
+              className={
+                field.kind === "textarea" || field.kind === "media" || field.kind === "url"
+                  ? "md:col-span-2"
+                  : ""
+              }
             >
               {renderField(group.section, field, group.section)}
             </div>
@@ -378,7 +399,11 @@ export default function ContentEditor({
                   {group.fields.map((field) => (
                     <div
                       key={field.field}
-                      className={field.kind === "textarea" || field.kind === "media" ? "md:col-span-2" : ""}
+                      className={
+                        field.kind === "textarea" || field.kind === "media" || field.kind === "url"
+                          ? "md:col-span-2"
+                          : ""
+                      }
                     >
                       {renderField(section, field, `${group.prefix}-${itemId}`)}
                     </div>

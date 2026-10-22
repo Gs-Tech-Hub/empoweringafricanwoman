@@ -112,6 +112,39 @@ export function getInstagramReelEmbedUrl(url?: string | null) {
   }
 }
 
+export function getYouTubeEmbedUrl(url?: string | null) {
+  if (!url) return null;
+
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== "https:") {
+      return null;
+    }
+
+    const hostname = parsed.hostname.toLowerCase();
+    const isShortLink = hostname === "youtu.be";
+    const isYouTube =
+      hostname === "youtube.com" ||
+      hostname === "www.youtube.com" ||
+      hostname === "m.youtube.com";
+    if (!isShortLink && !isYouTube) {
+      return null;
+    }
+
+    const videoId = isShortLink
+      ? parsed.pathname.split("/").filter(Boolean)[0]
+      : parsed.pathname === "/watch"
+        ? parsed.searchParams.get("v")
+        : parsed.pathname.match(/^\/(?:embed|shorts|live)\/([^/]+)/)?.[1];
+
+    return videoId && /^[\w-]{11}$/.test(videoId)
+      ? `https://www.youtube-nocookie.com/embed/${videoId}`
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 export function getTikTokEmbedUrl(url?: string | null) {
   if (!url) return null;
 

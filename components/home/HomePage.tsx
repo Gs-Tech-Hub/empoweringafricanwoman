@@ -1,8 +1,5 @@
 import type { RegionId } from "@/config/regions";
-import {
-  getFeaturedCollections,
-  getPublishedReviews,
-} from "@/lib/queries";
+import { getPublishedReviews } from "@/lib/queries";
 import {
   getContentSections,
   getContentValue,
@@ -24,8 +21,7 @@ type HomePageProps = {
 };
 
 export default async function HomePage({ regionId = "global" }: HomePageProps) {
-  const [programmes, stories, pageContent] = await Promise.all([
-    getFeaturedCollections(6, regionId),
+  const [stories, pageContent] = await Promise.all([
     getPublishedReviews(regionId),
     getPageContent("home", regionId),
   ]);
@@ -60,8 +56,8 @@ export default async function HomePage({ regionId = "global" }: HomePageProps) {
       />
       <PeopleSections content={pageContent} />
       <ProgrammePillars content={pageContent} />
-      <ImpactSection content={pageContent} />
-      <ProgrammesSection programmes={programmes} content={pageContent} />
+      <ImpactSection content={pageContent} variant="summary" />
+      <ProgrammesSection content={pageContent} />
       <ActivitiesSection content={pageContent} />
       <StoriesSection stories={stories} content={pageContent} />
       <DonationSection

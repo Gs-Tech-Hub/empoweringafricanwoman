@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import ContentPage from "@/components/content/ContentPage";
+import BeneficiaryStoryCard from "@/components/content/BeneficiaryStoryCard";
 import { getContentValue, getPageContent } from "@/lib/content/site-content";
 import { getPublishedReviews } from "@/lib/queries";
 import { getCurrentRegion } from "@/lib/region/get-current-region";
-import { getMediaUrl } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -27,37 +26,32 @@ export default async function StoriesPage() {
   return (
     <>
       <ContentPage content={content} title="Stories" />
-      {stories.length ? (
-        <section className="bg-brand-ivory py-16 md:py-24">
-          <div className="content-container grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {stories.map((story) => (
-              <blockquote key={story.id} className="card-programme flex flex-col p-6">
-                {story.mediaAsset ? (
-                  <Image
-                    src={getMediaUrl(story.mediaAsset)!}
-                    alt={story.mediaAsset.altText ?? ""}
-                    width={600}
-                    height={400}
-                    unoptimized
-                    className="mb-5 aspect-[4/3] w-full rounded-lg object-cover"
-                  />
-                ) : null}
-                {story.title ? (
-                  <h2 className="mb-3 font-heading text-lg font-semibold text-brand-primary">
-                    {story.title}
-                  </h2>
-                ) : null}
-                <p className="flex-1 whitespace-pre-line text-sm leading-relaxed text-brand-muted">
-                  “{story.content}”
-                </p>
-                <footer className="mt-5 text-sm font-semibold text-brand-primary">
-                  — {story.authorName}
-                </footer>
-              </blockquote>
-            ))}
-          </div>
-        </section>
-      ) : null}
+      <section className="bg-brand-ivory py-16 md:py-24" aria-labelledby="beneficiary-stories">
+        <div className="content-container">
+          <header className="mb-10 max-w-3xl">
+            <p className="eyebrow mb-4">Voices and experiences</p>
+            <div className="gold-divider mb-6 !mx-0" />
+            <h2 id="beneficiary-stories" className="section-heading">
+              Beneficiary stories
+            </h2>
+            <p className="mt-4 leading-relaxed text-brand-muted">
+              Read and watch stories shared with permission by the women and communities involved
+              in our work.
+            </p>
+          </header>
+          {stories.length ? (
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {stories.map((story) => (
+                <BeneficiaryStoryCard key={story.id} story={story} />
+              ))}
+            </div>
+          ) : (
+            <p className="card-luxury p-6 text-brand-muted">
+              Stories will appear here once a participant-approved story is ready to share.
+            </p>
+          )}
+        </div>
+      </section>
     </>
   );
 }

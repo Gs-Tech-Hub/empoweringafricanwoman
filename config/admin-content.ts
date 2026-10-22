@@ -1,9 +1,18 @@
-export type ContentFieldKind = "text" | "textarea" | "media" | "icon" | "status";
+export type ContentFieldKind =
+  | "text"
+  | "textarea"
+  | "date"
+  | "url"
+  | "event-status"
+  | "media"
+  | "icon"
+  | "status";
 
 export type ContentFieldDefinition = {
   field: string;
   label: string;
   kind?: ContentFieldKind;
+  required?: boolean;
   help?: string;
 };
 
@@ -111,6 +120,56 @@ const teamMembers: RepeatableContentGroup = {
     { field: "bio", label: "Biography", kind: "textarea" },
     { field: "order", label: "Display order" },
     { field: "media", label: "Portrait", kind: "media" },
+  ],
+};
+
+const plannedEvents: RepeatableContentGroup = {
+  prefix: "planned-event",
+  title: "Planned events",
+  description: "Upcoming events and their dates, locations, and practical details.",
+  itemLabel: "Planned event",
+  fields: [
+    { field: "title", label: "Event title", required: true },
+    { field: "date", label: "Event date", kind: "date", required: true },
+    { field: "time", label: "Event time" },
+    { field: "location", label: "Location" },
+    { field: "details", label: "Event details", kind: "textarea" },
+    { field: "registrationUrl", label: "Registration link", kind: "url" },
+    { field: "media", label: "Event image", kind: "media" },
+    {
+      field: "status",
+      label: "Publication status",
+      kind: "event-status",
+      help: "Keep as draft until the event information is confirmed.",
+    },
+    { field: "order", label: "Display order" },
+  ],
+};
+
+const completedEvents: RepeatableContentGroup = {
+  prefix: "impact-event",
+  title: "Completed events",
+  description: "Events that have taken place, with outcomes, photos, and YouTube videos.",
+  itemLabel: "Completed event",
+  fields: [
+    { field: "title", label: "Event title", required: true },
+    { field: "date", label: "Event date", kind: "date", required: true },
+    { field: "location", label: "Location" },
+    { field: "details", label: "Event outcomes and details", kind: "textarea" },
+    {
+      field: "youtubeUrl",
+      label: "YouTube video URL",
+      kind: "url",
+      help: "Paste a YouTube watch, short, or embed link.",
+    },
+    { field: "media", label: "Event image or video", kind: "media" },
+    {
+      field: "status",
+      label: "Publication status",
+      kind: "event-status",
+      help: "Keep as draft until the event details and outcomes are confirmed.",
+    },
+    { field: "order", label: "Display order" },
   ],
 };
 
@@ -255,9 +314,20 @@ export const adminContentDefinitions: Record<string, PageContentDefinition> = {
     repeatable: commonSections.concat(teamMembers),
   },
   programmes: {
-    description: "Programmes page introduction and editorial sections.",
-    fixed: [pageHeader],
-    repeatable: commonSections,
+    description: "Programme information and planned event details.",
+    fixed: [
+      pageHeader,
+      {
+        section: "planned-events",
+        title: "Planned events heading",
+        fields: [
+          { field: "eyebrow", label: "Eyebrow" },
+          { field: "title", label: "Section heading" },
+          { field: "description", label: "Introduction", kind: "textarea" },
+        ],
+      },
+    ],
+    repeatable: [...commonSections, plannedEvents],
   },
   impact: {
     description: "Impact page introduction and editorial sections.",
@@ -273,9 +343,19 @@ export const adminContentDefinitions: Record<string, PageContentDefinition> = {
           { field: "description", label: "Introduction", kind: "textarea" },
         ],
       },
+      {
+        section: "completed-events",
+        title: "Completed events heading",
+        fields: [
+          { field: "eyebrow", label: "Eyebrow" },
+          { field: "title", label: "Section heading" },
+          { field: "description", label: "Introduction", kind: "textarea" },
+        ],
+      },
     ],
     repeatable: [
       ...commonSections,
+      completedEvents,
       {
         prefix: "target",
         title: "Impact cards",

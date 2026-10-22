@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ContentPage from "@/components/content/ContentPage";
+import EventSections from "@/components/content/EventSections";
 import { ImpactSection } from "@/components/home/ImpactSection";
 import { getContentValue, getPageContent } from "@/lib/content/site-content";
 import { getCurrentRegion } from "@/lib/region/get-current-region";
@@ -22,6 +23,7 @@ export default async function ImpactPage() {
   return (
     <>
       <ContentPage content={content} title="Impact" />
+      <EventSections content={content} kind="completed" />
       <ImpactSection content={content} />
     </>
   );

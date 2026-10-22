@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import ContentPage from "@/components/content/ContentPage";
+import EventSections from "@/components/content/EventSections";
 import { getCurrentRegion } from "@/lib/region/get-current-region";
 import { getContentValue, getPageContent } from "@/lib/content/site-content";
 import { getPublishedCollectionItems } from "@/lib/queries";
@@ -27,6 +28,7 @@ export default async function ProgrammesPage() {
   return (
     <>
       <ContentPage content={content} title="Programmes" />
+      <EventSections content={content} kind="planned" />
       {programmes.length ? (
         <section className="bg-brand-ivory py-16 md:py-24">
           <div className="content-container grid gap-8 md:grid-cols-2 lg:grid-cols-3">

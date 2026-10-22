@@ -1,6 +1,9 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
+import { getMediaUrl } from "@/lib/utils";
 
 type Story = {
   id: string;
@@ -13,7 +16,7 @@ type Story = {
   mediaAssetId: string | null;
 };
 
-type Media = { id: string; fileName: string };
+type Media = { id: string; fileName: string; mediaType: "IMAGE" | "VIDEO" };
 
 type StoryDraft = Omit<Story, "id" | "published">;
 
@@ -149,7 +152,7 @@ export default function StoryManager({
         </div>
         <div>
           <label htmlFor={`${prefix}-media`} className="mb-1 block text-sm text-brand-muted">
-            Participant image
+            Story image or video (optional)
           </label>
           <select
             id={`${prefix}-media`}
@@ -157,14 +160,40 @@ export default function StoryManager({
             onChange={(event) => update({ mediaAssetId: event.target.value || null })}
             className="form-select w-full"
           >
-            <option value="">No image</option>
+            <option value="">Text-only story</option>
             {media.map((asset) => (
               <option key={asset.id} value={asset.id}>
-                {asset.fileName}
+                {asset.mediaType === "VIDEO" ? "Video" : "Image"}: {asset.fileName}
               </option>
             ))}
           </select>
         </div>
+        {story.mediaAssetId ? (
+          <div className="md:col-span-2">
+            {(() => {
+              const selectedMedia = media.find((asset) => asset.id === story.mediaAssetId);
+              if (!selectedMedia) return null;
+              const mediaUrl = getMediaUrl(selectedMedia.id);
+              return selectedMedia.mediaType === "VIDEO" ? (
+                <video
+                  src={mediaUrl ?? undefined}
+                  controls
+                  preload="metadata"
+                  className="max-h-72 w-full rounded-lg bg-black"
+                />
+              ) : (
+                <Image
+                  src={mediaUrl ?? ""}
+                  alt=""
+                  width={480}
+                  height={320}
+                  unoptimized
+                  className="max-h-72 w-auto rounded-lg object-cover"
+                />
+              );
+            })()}
+          </div>
+        ) : null}
         <div className="md:col-span-2">
           <label htmlFor={`${prefix}-content`} className="mb-1 block text-sm text-brand-muted">
             Story text
@@ -198,7 +227,11 @@ export default function StoryManager({
         <div>
           <h2 className="font-heading text-xl font-semibold text-brand-primary">Add story</h2>
           <p className="mt-1 text-sm text-brand-muted">
-            New stories are drafts. Verify consent and accuracy before publishing.
+            Add a written story with an optional image or video. Upload media in the{" "}
+            <Link href="/admin/media" className="font-medium text-brand-primary underline">
+              media library
+            </Link>
+            . New stories are drafts until consent and accuracy are confirmed.
           </p>
         </div>
         {storyFields(

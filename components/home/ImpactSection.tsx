@@ -1,7 +1,14 @@
+import Link from "next/link";
 import { getContentSections, type PageContent } from "@/lib/content/site-content";
 
-export function ImpactSection({ content }: { content: PageContent }) {
-  const targets = getContentSections(content, "target")
+export function ImpactSection({
+  content,
+  variant = "detail",
+}: {
+  content: PageContent;
+  variant?: "summary" | "detail";
+}) {
+  const targets = (variant === "detail" ? getContentSections(content, "target") : [])
     .map(({ id, fields }) => ({
       id,
       label: fields.label?.value ?? "",
@@ -11,7 +18,11 @@ export function ImpactSection({ content }: { content: PageContent }) {
     }))
     .filter((target) => target.label || target.value || target.description);
 
-  if (!content.impact?.title?.value && targets.length === 0) {
+  if (
+    !content.impact?.title?.value &&
+    !content.impact?.description?.value &&
+    targets.length === 0
+  ) {
     return null;
   }
 
@@ -54,6 +65,11 @@ export function ImpactSection({ content }: { content: PageContent }) {
             </article>
             ))}
           </div>
+        ) : null}
+        {variant === "summary" ? (
+          <Link href="/impact" className="button-secondary mt-8 inline-flex">
+            Explore our impact
+          </Link>
         ) : null}
       </div>
     </section>

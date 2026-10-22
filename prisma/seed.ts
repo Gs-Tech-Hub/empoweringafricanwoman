@@ -32,6 +32,12 @@ const initialPageLabels = [
   { page: "home", section: "activity:learning", field: "description", value: "Training, digital access, and learning opportunities." },
   { page: "home", section: "activity:enterprise", field: "title", value: "Enterprise & livelihoods" },
   { page: "home", section: "activity:enterprise", field: "description", value: "Business support and sustainable livelihood opportunities." },
+  { page: "home", section: "activity:community", field: "title", value: "Community connection" },
+  { page: "home", section: "activity:community", field: "description", value: "Community-led activities that bring people together and strengthen local support." },
+  { page: "home", section: "activity:skills", field: "title", value: "Practical skills" },
+  { page: "home", section: "activity:skills", field: "description", value: "Learning and practical skills that support women’s goals and livelihoods." },
+  { page: "home", section: "activity:markets", field: "title", value: "Local markets" },
+  { page: "home", section: "activity:markets", field: "description", value: "Women-led enterprise and participation in local markets." },
   { page: "home", section: "value:education", field: "title", value: "Education & skills" },
   { page: "home", section: "value:education", field: "description", value: "Skills and learning opportunities" },
   { page: "home", section: "value:enterprise", field: "title", value: "Enterprise support" },
@@ -100,11 +106,30 @@ const initialPageLabels = [
   { page: "programmes", section: "section:overview", field: "eyebrow", value: "How we work" },
   { page: "programmes", section: "section:overview", field: "title", value: "Responsive, practical support" },
   { page: "programmes", section: "section:overview", field: "body", value: "Each programme is shaped around local needs, partnership opportunities, and the realities women face in everyday life. We focus on support that is useful, sustainable, and rooted in community trust." },
+  { page: "programmes", section: "planned-events", field: "eyebrow", value: "Coming up" },
+  { page: "programmes", section: "planned-events", field: "title", value: "Planned events" },
+  { page: "programmes", section: "planned-events", field: "description", value: "Browse upcoming programme events, including dates, times, locations, and participation details." },
+  { page: "programmes", section: "planned-event:sample", field: "title", value: "SAMPLE — Replace with a confirmed planned event" },
+  { page: "programmes", section: "planned-event:sample", field: "date", value: "2027-01-15" },
+  { page: "programmes", section: "planned-event:sample", field: "time", value: "Add confirmed start and end time" },
+  { page: "programmes", section: "planned-event:sample", field: "location", value: "Add confirmed venue or online access details" },
+  { page: "programmes", section: "planned-event:sample", field: "details", value: "Sample only. Replace with the confirmed event purpose, audience, agenda, accessibility information, and any preparation participants need. Keep this event as a draft until details are verified." },
+  { page: "programmes", section: "planned-event:sample", field: "status", value: "draft" },
+  { page: "programmes", section: "planned-event:sample", field: "order", value: "1" },
   { page: "impact", section: "page", field: "title", value: "Impact" },
   { page: "impact", section: "page", field: "description", value: "Impact is measured through meaningful progress in women’s opportunity, wellbeing, and connectedness." },
   { page: "impact", section: "impact", field: "eyebrow", value: "Impact" },
   { page: "impact", section: "impact", field: "title", value: "Progress rooted in community needs" },
   { page: "impact", section: "impact", field: "description", value: "Our work strengthens local capacity, peer support, and practical opportunity for women and their families." },
+  { page: "impact", section: "completed-events", field: "eyebrow", value: "What we have done" },
+  { page: "impact", section: "completed-events", field: "title", value: "Completed events" },
+  { page: "impact", section: "completed-events", field: "description", value: "Read about completed activities and confirmed outcomes. Add a YouTube video or event photos where available." },
+  { page: "impact", section: "impact-event:sample", field: "title", value: "SAMPLE — Replace with a completed event" },
+  { page: "impact", section: "impact-event:sample", field: "date", value: "2025-01-15" },
+  { page: "impact", section: "impact-event:sample", field: "location", value: "Add confirmed venue or community location" },
+  { page: "impact", section: "impact-event:sample", field: "details", value: "Sample only. Replace with a factual summary of the activity and verified outcomes. Do not publish unverified participant counts, quotes, or claims." },
+  { page: "impact", section: "impact-event:sample", field: "status", value: "draft" },
+  { page: "impact", section: "impact-event:sample", field: "order", value: "1" },
   { page: "impact", section: "target:participants", field: "label", value: "Women reached" },
   { page: "impact", section: "target:participants", field: "value", value: "2,500" },
   { page: "impact", section: "target:participants", field: "description", value: "Women supported through skills, leadership, and livelihood programmes." },
@@ -202,7 +227,63 @@ const localFallbackMedia: Array<{
     mimeType: "image/png",
     mediaType: "IMAGE",
     altText: "Team members collaborating in a community space",
-    caption: "Teamwork and community collaboration",  
+    caption: "Teamwork and community collaboration",
+  },
+  {
+    fileId: "/images/aged-woman-with-gifts.jpg",
+    fileName: "aged-woman-with-gifts.jpg",
+    mimeType: "image/jpeg",
+    mediaType: "IMAGE",
+    altText: "Elderly woman receiving gifts in a community setting",
+    caption: "Community support and care",
+  },
+  {
+    fileId: "/images/amina-tailor.jpg",
+    fileName: "amina-tailor.jpg",
+    mimeType: "image/jpeg",
+    mediaType: "IMAGE",
+    altText: "Amina, a tailor, working on her sewing machine",
+    caption: "Empowering women through skill development",
+  },
+  {
+    fileId: "/images/blessing-vegetable-seller.jpg",
+    fileName: "blessing-vegetable-seller.jpg",
+    mimeType: "image/jpeg",
+    mediaType: "IMAGE",
+    altText: "Blessing, a vegetable seller, arranging her produce",
+    caption: "Supporting women entrepreneurs in local markets",
+  },
+  {
+    fileId: "/images/empowering-women-through-community-meals.png",
+    fileName: "empowering-women-through-community-meals.png",
+    mimeType: "image/png",
+    mediaType: "IMAGE",
+    altText: "Women participating in a community meal program",
+    caption: "Fostering community engagement and support",
+  },
+  {
+    fileId: "/images/grace-two-kids-rural.jpg",
+    fileName: "grace-two-kids-rural.jpg",
+    mimeType: "image/jpeg",
+    mediaType: "IMAGE",
+    altText: "A woman with her children in a rural setting",
+    caption: "Family and community life",
+  },
+  {
+    fileId: "/images/kid-with-books.jpg",
+    fileName: "kid-with-books.jpg",
+    mimeType: "image/jpeg",
+    mediaType: "IMAGE",
+    altText: "Child holding books in a learning environment",
+    caption: "Learning and literacy",
+  },
+  {
+    fileId: "/images/woman-in-local-market.jpg",
+    fileName: "woman-in-local-market.jpg",
+    mimeType: "image/jpeg",
+    mediaType: "IMAGE",
+    altText: "Woman working at a local market",
+    caption: "Women-led local enterprise",
   },
 ];
 
@@ -240,28 +321,37 @@ async function ensureDefaultContent() {
         },
       },
       create: entry,
-      update: { value: entry.value },
+      update: {},
     });
   }
 
-  const [heroAsset, programmeAsset, soilAsset, founderAsset, teamAsset] = await Promise.all([
-    upsertMediaAsset(localFallbackMedia[0]),
-    upsertMediaAsset(localFallbackMedia[1]),
-    upsertMediaAsset(localFallbackMedia[2]),
-    upsertMediaAsset(localFallbackMedia[4]),
-    upsertMediaAsset(localFallbackMedia[5]),
-  ]);
+  const mediaAssets = await Promise.all(localFallbackMedia.map(upsertMediaAsset));
+  const assetIdFor = (fileName: string) => {
+    const asset = mediaAssets.find((candidate) => candidate.fileName === fileName);
+    if (!asset) {
+      throw new Error(`Seed media asset not found: ${fileName}`);
+    }
+    return asset.id;
+  };
 
   const mediaAssignments = [
-    { page: "home", section: "hero", field: "media", mediaAssetId: heroAsset.id },
-    { page: "home", section: "programmes", field: "media", mediaAssetId: programmeAsset.id },
-    { page: "home", section: "stories", field: "media", mediaAssetId: soilAsset.id },
-    { page: "home", section: "activity:learning", field: "media", mediaAssetId: heroAsset.id },
-    { page: "home", section: "activity:enterprise", field: "media", mediaAssetId: programmeAsset.id },
-    { page: "home", section: "founder", field: "media", mediaAssetId: founderAsset.id },
-    { page: "about", section: "founder", field: "media", mediaAssetId: founderAsset.id },
-    { page: "home", section: "team", field: "media", mediaAssetId: teamAsset.id },
-    { page: "about", section: "team", field: "media", mediaAssetId: teamAsset.id },
+    { page: "home", section: "hero", field: "media", mediaAssetId: assetIdFor("woman-on-computer.jpg") },
+    { page: "home", section: "programmes", field: "media", mediaAssetId: assetIdFor("woman-in-shop.jpg") },
+    { page: "home", section: "stories", field: "media", mediaAssetId: assetIdFor("soil-with-plant.jpg") },
+    { page: "home", section: "activity:learning", field: "media", mediaAssetId: assetIdFor("woman-on-computer.jpg") },
+    { page: "home", section: "activity:enterprise", field: "media", mediaAssetId: assetIdFor("woman-in-shop.jpg") },
+    { page: "home", section: "activity:community", field: "media", mediaAssetId: assetIdFor("empowering-women-through-community-meals.png") },
+    { page: "home", section: "activity:skills", field: "media", mediaAssetId: assetIdFor("amina-tailor.jpg") },
+    { page: "home", section: "activity:markets", field: "media", mediaAssetId: assetIdFor("woman-in-local-market.jpg") },
+    { page: "home", section: "founder", field: "media", mediaAssetId: assetIdFor("founder.png") },
+    { page: "about", section: "founder", field: "media", mediaAssetId: assetIdFor("founder.png") },
+    { page: "home", section: "team", field: "media", mediaAssetId: assetIdFor("team.png") },
+    { page: "about", section: "team", field: "media", mediaAssetId: assetIdFor("team.png") },
+    { page: "programmes", section: "planned-event:sample", field: "media", mediaAssetId: assetIdFor("woman-in-shop.jpg") },
+    { page: "impact", section: "impact-event:sample", field: "media", mediaAssetId: assetIdFor("soil-with-plant.jpg") },
+    { page: "about", section: "section:story", field: "media", mediaAssetId: assetIdFor("Hopeful Artisan in Vibrant Headwrap.png") },
+    { page: "stories", section: "section:stories", field: "media", mediaAssetId: assetIdFor("grace-two-kids-rural.jpg") },
+    { page: "locations", section: "section:network", field: "media", mediaAssetId: assetIdFor("aged-woman-with-gifts.jpg") },
   ] as const;
 
   for (const assignment of mediaAssignments) {
@@ -281,7 +371,7 @@ async function ensureDefaultContent() {
         field: assignment.field,
         mediaAssetId: assignment.mediaAssetId,
       },
-      update: { mediaAssetId: assignment.mediaAssetId },
+      update: {},
     });
   }
 }
