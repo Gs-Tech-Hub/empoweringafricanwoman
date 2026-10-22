@@ -27,6 +27,11 @@ const contentSchema = z.object({
   entries: z.array(contentEntrySchema).max(200),
 });
 
+const sharedSiteFields: Record<string, readonly string[]> = {
+  contact: ["email", "phone", "address"],
+  social: ["facebook", "instagram", "x", "linkedin", "youtube"],
+};
+
 export async function PUT(request: Request) {
   const session = await requireAdminSession();
   if (!session) {
@@ -59,21 +64,38 @@ export async function PUT(request: Request) {
       }
     }
 
+    const contactEntries =
+      parsed.page === "home"
+        ? parsed.entries.filter(
+            ({ section, field }) =>
+              sharedSiteFields[section]?.includes(field) ?? false,
+          )
+        : [];
+    const pageEntries =
+      parsed.page === "home"
+        ? parsed.entries.filter(
+            (entry) =>
+              !(
+                sharedSiteFields[entry.section]?.includes(entry.field) ?? false
+              ),
+          )
+        : parsed.entries;
+
     const operations = [
       prisma.siteContent.deleteMany({
         where: {
           page: parsed.page,
           region: parsed.region,
-          ...(parsed.entries.length
+          ...(pageEntries.length
             ? {
                 NOT: {
-                  OR: parsed.entries.map(({ section, field }) => ({ section, field })),
+                  OR: pageEntries.map(({ section, field }) => ({ section, field })),
                 },
               }
             : {}),
         },
       }),
-      ...parsed.entries.map(({ section, field, value, mediaAssetId }) =>
+      ...pageEntries.map(({ section, field, value, mediaAssetId }) =>
         prisma.siteContent.upsert({
           where: {
             page_region_section_field: {
@@ -95,6 +117,26 @@ export async function PUT(request: Request) {
             value: value ?? null,
             mediaAssetId: mediaAssetId || null,
           },
+        }),
+      ),
+      ...contactEntries.map(({ section, field, value }) =>
+        prisma.siteContent.upsert({
+          where: {
+            page_region_section_field: {
+              page: "site",
+              region: parsed.region,
+              section,
+              field,
+            },
+          },
+          create: {
+            page: "site",
+            region: parsed.region,
+            section,
+            field,
+            value: value ?? null,
+          },
+          update: { value: value ?? null },
         }),
       ),
     ];

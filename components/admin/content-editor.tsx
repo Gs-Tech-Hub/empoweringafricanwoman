@@ -309,12 +309,25 @@ export default function ContentEditor({
         ) : (
           <input
             id={id}
-            type={field.kind === "date" || field.kind === "url" ? field.kind : "text"}
+            type={
+              field.kind === "date" ||
+              field.kind === "url" ||
+              field.kind === "email" ||
+              field.kind === "tel"
+                ? field.kind
+                : "text"
+            }
             value={value}
             onChange={(event) => setField(section, field.field, { value: event.target.value })}
             maxLength={10000}
             required={field.required}
-            placeholder={field.kind === "url" ? "https://" : undefined}
+            placeholder={
+              field.kind === "url"
+                ? "https://"
+                : field.kind === "email"
+                  ? "name@example.org"
+                  : undefined
+            }
             className="form-input w-full"
           />
         )}
@@ -338,7 +351,10 @@ export default function ContentEditor({
             <div
               key={field.field}
               className={
-                field.kind === "textarea" || field.kind === "media" || field.kind === "url"
+                field.kind === "textarea" ||
+                field.kind === "media" ||
+                field.kind === "url" ||
+                field.kind === "email"
                   ? "md:col-span-2"
                   : ""
               }

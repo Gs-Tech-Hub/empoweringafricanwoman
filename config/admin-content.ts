@@ -1,6 +1,8 @@
 export type ContentFieldKind =
   | "text"
   | "textarea"
+  | "email"
+  | "tel"
   | "date"
   | "url"
   | "event-status"
@@ -258,6 +260,30 @@ export const adminContentDefinitions: Record<string, PageContentDefinition> = {
           { field: "description", label: "Introduction", kind: "textarea" },
         ],
       },
+      {
+        section: "contact",
+        title: "Contact details",
+        description:
+          "Edit the shared contact information shown in the website header and footer. These values are also available under Site-wide content.",
+        fields: [
+          { field: "email", label: "Email address", kind: "email" },
+          { field: "phone", label: "Phone number", kind: "tel" },
+          { field: "address", label: "Postal address", kind: "textarea" },
+        ],
+      },
+      {
+        section: "social",
+        title: "Social media links",
+        description:
+          "Edit the shared social profile links shown on the website. These values are also available under Site-wide content.",
+        fields: [
+          { field: "facebook", label: "Facebook URL", kind: "url" },
+          { field: "instagram", label: "Instagram URL", kind: "url" },
+          { field: "x", label: "X URL", kind: "url" },
+          { field: "linkedin", label: "LinkedIn URL", kind: "url" },
+          { field: "youtube", label: "YouTube URL", kind: "url" },
+        ],
+      },
     ],
     repeatable: [
       {
@@ -392,9 +418,10 @@ export const adminContentDefinitions: Record<string, PageContentDefinition> = {
       {
         section: "contact",
         title: "Contact details",
+        description: "Edit the contact information displayed across the public website.",
         fields: [
-          { field: "email", label: "Email address" },
-          { field: "phone", label: "Phone number" },
+          { field: "email", label: "Email address", kind: "email" },
+          { field: "phone", label: "Phone number", kind: "tel" },
           { field: "address", label: "Postal address", kind: "textarea" },
         ],
       },

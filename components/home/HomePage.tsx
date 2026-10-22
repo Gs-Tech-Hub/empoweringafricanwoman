@@ -21,9 +21,10 @@ type HomePageProps = {
 };
 
 export default async function HomePage({ regionId = "global" }: HomePageProps) {
-  const [stories, pageContent] = await Promise.all([
+  const [stories, pageContent, impactContent] = await Promise.all([
     getPublishedReviews(regionId),
     getPageContent("home", regionId),
+    getPageContent("impact", regionId),
   ]);
   const heroAsset = pageContent.hero?.media?.mediaAsset;
   const heroMedia =
@@ -56,7 +57,11 @@ export default async function HomePage({ regionId = "global" }: HomePageProps) {
       />
       <PeopleSections content={pageContent} />
       <ProgrammePillars content={pageContent} />
-      <ImpactSection content={pageContent} variant="summary" />
+      <ImpactSection
+        content={pageContent}
+        highlightContent={impactContent}
+        variant="summary"
+      />
       <ProgrammesSection content={pageContent} />
       <ActivitiesSection content={pageContent} />
       <StoriesSection stories={stories} content={pageContent} />

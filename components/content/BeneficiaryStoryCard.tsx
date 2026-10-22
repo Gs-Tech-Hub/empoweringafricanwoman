@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { getMediaUrl } from "@/lib/utils";
 
 export type BeneficiaryStory = {
@@ -53,9 +54,22 @@ export default function BeneficiaryStoryCard({
             {story.title}
           </h3>
         ) : null}
-        <blockquote className="mt-3 flex-1 whitespace-pre-line text-sm leading-relaxed text-brand-muted">
+        <blockquote
+          className={`mt-3 flex-1 whitespace-pre-line text-sm leading-relaxed text-brand-muted ${
+            compact ? "line-clamp-3" : ""
+          }`}
+        >
           {story.content}
         </blockquote>
+        {compact ? (
+          <Link
+            href="/stories"
+            className="mt-3 inline-flex text-sm font-semibold text-brand-primary underline underline-offset-4 hover:text-brand-accent"
+            aria-label={`Read more stories${story.title ? `, including ${story.title}` : ""}`}
+          >
+            Read more
+          </Link>
+        ) : null}
         <footer className="mt-5 border-t border-brand-border pt-4 text-sm font-semibold text-brand-charcoal">
           {story.authorName}
         </footer>

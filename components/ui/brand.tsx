@@ -16,10 +16,10 @@ export default function Brand({
   priority?: boolean;
 }) {
   const sizeMap: Record<string, string> = {
-    sm: "text-sm",
-    md: "text-base md:text-lg",
-    lg: "text-2xl md:text-3xl",
-    xl: "text-4xl md:text-5xl",
+    sm: "text-sm max-w-[6.5rem]",
+    md: "text-base md:text-lg max-w-[8rem] md:max-w-[10rem]",
+    lg: "text-2xl md:text-3xl max-w-[12rem] md:max-w-[16rem]",
+    xl: "text-4xl md:text-5xl max-w-[16rem] md:max-w-[20rem]",
   };
 
   const content = (
@@ -32,11 +32,10 @@ export default function Brand({
         priority={priority}
         className="h-11 w-11 shrink-0 object-contain"
       />
-      <span className="flex flex-col leading-tight">
+      <span className="flex min-w-0 flex-col leading-tight">
         <span className={`font-heading font-semibold uppercase text-brand-primary ${sizeMap[size]}`}>
           {brand.name}
         </span>
-      
       </span>
     </span>
   );

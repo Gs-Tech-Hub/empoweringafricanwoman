@@ -30,13 +30,42 @@ export default async function AdminContentPage({
   const relatedTool =
     pageDetails && "relatedTool" in pageDetails ? pageDetails.relatedTool : undefined;
   const region = params.region && isRegionId(params.region) ? params.region : "global";
-  const [entries, media] = await Promise.all([
+  const [entries, media, sharedContactEntries] = await Promise.all([
     getRegionalContentEntries(region, page),
     prisma.mediaAsset.findMany({
       select: { id: true, fileId: true, fileName: true, mediaType: true, altText: true },
       orderBy: { createdAt: "desc" },
     }),
+    page === "home"
+      ? prisma.siteContent.findMany({
+          where: {
+            page: "site",
+            region: { in: ["global", region] },
+            section: { in: ["contact", "social"] },
+          },
+        })
+      : Promise.resolve([]),
   ]);
+  const initialEntries =
+    page === "home"
+      ? [
+          ...entries.filter(
+            (entry) => entry.section !== "contact" && entry.section !== "social",
+          ),
+          ...Array.from(
+            sharedContactEntries
+              .sort(
+                (left, right) =>
+                  Number(right.region === "global") - Number(left.region === "global"),
+              )
+              .reduce((contactEntries, entry) => {
+                contactEntries.set(`${entry.section}\u0000${entry.field}`, entry);
+                return contactEntries;
+              }, new Map<string, (typeof sharedContactEntries)[number]>()),
+            ([, entry]) => entry,
+          ),
+        ]
+      : entries;
 
   return (
     <div className="space-y-8">
@@ -71,7 +100,7 @@ export default async function AdminContentPage({
         page={page}
         region={region}
         definition={adminContentDefinitions[page]}
-        initialEntries={entries.map((entry) => ({
+        initialEntries={initialEntries.map((entry) => ({
           id: entry.id,
           section: entry.section,
           field: entry.field,
